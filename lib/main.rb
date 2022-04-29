@@ -1,18 +1,22 @@
 require_relative 'pieces'
 require_relative 'board'
+require_relative 'tile'
 
 include Pieces
 
-#8.times { |i| i.even? ? build_black_tile(blank_space) : build_white_tile(blank_space) }
 
 puts black_king
 puts white_king
 
-puts 'call empty white tile'
-puts build_tile('white')
-puts 'call empty black tile'
-puts build_tile('black')
-puts 'call black king in both tiles'
-puts build_tile('white', black_king) + build_tile('black', black_king)
-puts 'call white king in both tiles'
-puts build_tile('white', white_king) + build_tile('black', white_king)
+
+w_tile = Tile.new('white')
+b_tile = Tile.new('black')
+
+w_tile.show
+b_tile.show
+bk_tile = Tile.new('white', black_king)
+wk_tile = Tile.new('black', white_king)
+bk_tile.show
+wk_tile.show
+#game = Board.new
+#game.display_board

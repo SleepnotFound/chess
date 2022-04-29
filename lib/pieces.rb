@@ -16,18 +16,10 @@ module Pieces
   def black_pawn;   "\e[30m\u265F" end
   
   def black_row(piece)
-    "\e[100m  #{piece}   \e[0m\n" 
+    "\e[100m  #{piece}   \e[0m" 
   end
   
   def white_row(piece)
-    "\e[47m  #{piece}   \e[0m\n" 
-  end
-  
-  def build_tile(tile, piece = blank_space)
-    if tile == 'white'
-      white_row(blank_space) + white_row(piece) + white_row(blank_space)
-    elsif tile == 'black'
-      black_row(blank_space) + black_row(piece) + black_row(blank_space)
-    end
+    "\e[47m  #{piece}   \e[0m" 
   end
 end
