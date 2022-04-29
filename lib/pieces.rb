@@ -23,11 +23,11 @@ module Pieces
     "\e[47m  #{piece}   \e[0m\n" 
   end
   
-  def build_b_tile(piece)
-    puts black_row(blank_space) + black_row(piece) + black_row(blank_space)
-  end
-  
-  def build_w_tile(piece)
-    puts white_row(blank_space) + white_row(piece) + white_row(blank_space)
+  def build_tile(tile, piece = blank_space)
+    if tile == 'white'
+      white_row(blank_space) + white_row(piece) + white_row(blank_space)
+    elsif tile == 'black'
+      black_row(blank_space) + black_row(piece) + black_row(blank_space)
+    end
   end
 end
