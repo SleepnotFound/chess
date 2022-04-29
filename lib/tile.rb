@@ -3,6 +3,8 @@ require_relative 'pieces'
 class Tile
   include Pieces
 
+  attr_reader :top, :middle, :bottom
+
   def initialize(tile, piece = blank_space)
     @top = nil
     @middle = nil
@@ -20,6 +22,14 @@ class Tile
       @middle = black_row(piece)
       @bottom = black_row(blank_space)
     end
+  end
+
+  def black_row(piece)
+    "\e[100m  #{piece}   \e[0m" 
+  end
+  
+  def white_row(piece)
+    "\e[47m  #{piece}   \e[0m" 
   end
 
   def show

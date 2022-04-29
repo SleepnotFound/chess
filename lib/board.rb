@@ -1,23 +1,24 @@
 require_relative 'pieces'
+require_relative 'tile'
 
 
 class Board 
   include Pieces
 
   def initialize 
-    @board = build_board
+    @board = Array.new(8) { Array.new(8) }
+    build_board
   end
 
   def build_board
-    arr = Array.new(8) { Array.new(8) }
-    arr.each_with_index do | row, r |
+    @board.each_with_index do | row, r |
       row.each_with_index do | tile, t |
         if r.even? 
           #1st pattern
-          t.even? ? arr[r][t] = build_tile('white') : arr[r][t] = build_tile('black')
+          tile = t.even? ? Tile.new('white') : Tile.new('black')
         elsif r.odd?
           #2nd pattern
-          t.odd? ? arr[r][t] = build_tile('white') : arr[r][t] = build_tile('black')
+          tile = t.odd? ? Tile.new('white') : Tile.new('black')
         end
       end
     end
@@ -25,7 +26,11 @@ class Board
 
   def display_board
     @board.each do |row|
-      puts row.reduce { |r, c| r + c }      
+      puts row 
     end
+  end
+
+  def test
+    p @board[0][0].class
   end
 end

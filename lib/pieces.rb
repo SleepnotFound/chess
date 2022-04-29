@@ -14,12 +14,4 @@ module Pieces
   def black_bishop; "\e[30m\u265D" end
   def black_knight; "\e[30m\u265E" end
   def black_pawn;   "\e[30m\u265F" end
-  
-  def black_row(piece)
-    "\e[100m  #{piece}   \e[0m" 
-  end
-  
-  def white_row(piece)
-    "\e[47m  #{piece}   \e[0m" 
-  end
 end
