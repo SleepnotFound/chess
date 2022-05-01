@@ -5,12 +5,13 @@ require_relative 'pieces'
 class Tile
   include Pieces
 
-  attr_reader :top, :middle, :bottom
+  attr_reader :top, :middle, :bottom, :piece
 
   def initialize(tile, piece = blank_space)
     @top = nil
     @middle = nil
     @bottom = nil
+    @piece = piece
     build_tile(tile, piece)
   end
 
