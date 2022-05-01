@@ -1,5 +1,7 @@
 require_relative 'pieces'
 
+# A tile consists of 3 lines in the terminal
+
 class Tile
   include Pieces
 
@@ -30,11 +32,5 @@ class Tile
   
   def white_row(piece)
     "\e[47m  #{piece}   \e[0m" 
-  end
-
-  def show
-     puts @top
-     puts @middle
-     puts @bottom
   end
 end

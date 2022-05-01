@@ -1,8 +1,7 @@
-require_relative 'pieces'
 require_relative 'board'
 require_relative 'tile'
 
-include Pieces
+
 
 =begin 
 w_tile = Tile.new('white')

@@ -1,9 +1,7 @@
-require_relative 'pieces'
 require_relative 'tile'
 
 
 class Board 
-  include Pieces
 
   attr_reader :board
 
@@ -37,17 +35,11 @@ class Board
     row = ""
     case num
     when 1
-      arr.each do |tile|
-        row += tile.top
-      end
+      arr.each { |tile| row += tile.top }
     when 2
-      arr.each do |tile|
-        row += tile.middle
-      end
+      arr.each { |tile| row += tile.middle }
     when 3
-      arr.each do |tile|
-        row += tile.bottom
-      end
+      arr.each { |tile| row += tile.bottom }
     end
     row += "\n"
   end
