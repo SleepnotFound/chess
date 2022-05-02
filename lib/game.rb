@@ -5,18 +5,20 @@ require_relative 'pieces'
 class Game 
   include Pieces
 
-  attr_accessor :board, :player1, :player2
+  attr_accessor :board, :player1, :player2, :active_player
   
   def initialize
     @board = Board.new
     @player1 = Player.new(white)
     @player2 = Player.new(black)
+    @active_player = self.player1
   end
 
   def play
     name_players
     set_game_pieces
     self.board.build_board
+    p self.active_player
   end
 
   def set_game_pieces
