@@ -6,11 +6,12 @@ class Board
   include Pieces
 
   attr_reader :board, :black_pieces, :white_pieces
+  #attr_accessor :board
 
   def initialize 
     @board = Array.new(8) { Array.new(8) }
-    @black_pieces = [King.new([4,0], black_king)]
-    @white_pieces = [King.new([4,7], white_king)]
+    @white_pieces = []
+    @black_pieces = []
     build_board
   end
 

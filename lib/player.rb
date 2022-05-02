@@ -1,6 +1,8 @@
 class Player
+  attr_writer :name
+
   def initialize
-    @name = name
-    @color = color
+    @name = nil
+    @pieces = []
   end
 end
