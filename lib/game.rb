@@ -25,10 +25,19 @@ class Game
   end
 
   def player_turn
-    input = verify_input
+    input = convert_to_cords(verify_input)
+    puts input
     #active_pieces = self.active_player.pieces
-    #puts self.active_player.pieces[0].piece
+    self.active_player.pieces.each do |piece|
+      puts piece.position
+    end
     #display_choices(selected)
+  end
+
+  def convert_to_cords(input)
+    x = input[0].ord - 97
+    y = 8 - input[1].to_i
+    [x, y]
   end
 
   def get_input
@@ -42,6 +51,7 @@ class Game
     until input.match?("\[a-d][1-8]")
       puts 'wrong input. only (a-d)(1-8)'
       input = get_input
+      input = input[1] + input[0] if input.match?("\[0-8][a-d]")
     end
     input
   end
