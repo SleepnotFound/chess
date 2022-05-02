@@ -1,5 +1,5 @@
 module Pieces
-  def blank_space;  " "     end
+  def blank_space;  " "      end
   def white;        "\e[97m" end
   def black;        "\e[30m" end
 

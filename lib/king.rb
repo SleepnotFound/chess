@@ -5,9 +5,9 @@ class King
 
   attr_reader :position, :piece
 
-  def initialize(position, piece)
-    @position = position
+  def initialize(piece, position)
     @piece = piece
+    @position = position
     @children = []
   end
 

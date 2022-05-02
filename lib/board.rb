@@ -12,10 +12,15 @@ class Board
     @board = Array.new(8) { Array.new(8) }
     @white_pieces = []
     @black_pieces = []
-    build_board
+    update_board
   end
 
   def build_board
+    update_board
+    display_board
+  end
+
+  def update_board
     @board.each_with_index do | row, r |
       row.each_with_index do | tile, t |
         if r.even? 
