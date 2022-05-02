@@ -18,7 +18,32 @@ class Game
     name_players
     set_game_pieces
     self.board.build_board
-    p self.active_player
+    player_turn
+    #puts "#{active_player.name} available spots:"
+    #valid_moves = active_player.pieces[0].children
+    #valid_moves.each { |i| puts "#{i[0]}, #{i[1]}" }
+  end
+
+  def player_turn
+    input = verify_input
+    #active_pieces = self.active_player.pieces
+    #puts self.active_player.pieces[0].piece
+    #display_choices(selected)
+  end
+
+  def get_input
+    puts "#{active_player.name}, select a cell"
+    gets.chomp
+  end
+
+  def verify_input
+    input = get_input.downcase
+    input = input[1] + input[0] if input.match?("\[0-8][a-d]")
+    until input.match?("\[a-d][1-8]")
+      puts 'wrong input. only (a-d)(1-8)'
+      input = get_input
+    end
+    input
   end
 
   def set_game_pieces
