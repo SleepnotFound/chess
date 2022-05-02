@@ -5,12 +5,12 @@ require_relative 'pieces'
 class Game 
   include Pieces
 
-  attr_accessor :board
+  attr_accessor :board, :player1, :player2
   
   def initialize
     @board = Board.new
-    @player1 = Player.new
-    @player2 = Player.new
+    @player1 = Player.new(white)
+    @player2 = Player.new(black)
   end
 
   def play
@@ -21,10 +21,12 @@ class Game
   end
 
   def set_game_pieces
-    temp_set_white = King.new([4,7], white + king)
-    temp_set_black = King.new([4,0], black + king)
-    self.board.white_pieces << temp_set_white
-    self.board.black_pieces << temp_set_black
+    t1 = King.new([4,7], white + king)
+    t2 = King.new([4,0], black + king)
+    self.player1.pieces << t1
+    self.player2.pieces << t2
+    self.board.white_pieces << self.player1.pieces[0]
+    self.board.black_pieces << self.player2.pieces[0]
   end
 
   def name_players

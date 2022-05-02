@@ -1,8 +1,13 @@
-class Player
-  attr_writer :name
+require_relative 'pieces'
 
-  def initialize
+class Player
+  include Pieces
+
+  attr_accessor :name, :pieces 
+
+  def initialize(color)
     @name = nil
+    @color = color
     @pieces = []
   end
 end
