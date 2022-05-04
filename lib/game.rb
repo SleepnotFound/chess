@@ -26,18 +26,20 @@ class Game
 
   def player_turn
     input = convert_to_cords(verify_input)
-    puts input
+    p input
     #active_pieces = self.active_player.pieces
-    self.active_player.pieces.each do |piece|
-      puts piece.position
+    selected = self.active_player.pieces.find do |piece|
+      piece.position == input
     end
+    puts "selected: #{selected} "
     #display_choices(selected)
   end
 
+  # y searches array in array. x searches cell in array(y) 
   def convert_to_cords(input)
     x = input[0].ord - 97
     y = 8 - input[1].to_i
-    [x, y]
+    [y, x]
   end
 
   def get_input
@@ -47,12 +49,11 @@ class Game
 
   def verify_input
     input = get_input.downcase
-    input = input[1] + input[0] if input.match?("\[0-8][a-d]")
-    until input.match?("\[a-d][1-8]")
-      puts 'wrong input. only (a-d)(1-8)'
-      input = get_input
-      input = input[1] + input[0] if input.match?("\[0-8][a-d]")
+    until input.match?("\[a-h][1-8]") || input.match?("\[0-8][a-h]")
+      puts 'wrong input. only (a-h)(1-8)'
+      input = get_input.downcase
     end
+    input = input[1] + input[0] if input.match?("\[0-8][a-h]")
     input
   end
 

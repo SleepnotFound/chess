@@ -24,11 +24,11 @@ describe Game do
 
   describe '#convert_to_cords' do
     subject(:game_convert) { described_class.new }
-    context 'when input is h8' do
-      it 'outputs [7,0]' do
-        input = 'h8'
+    context 'when input is e8' do
+      it 'outputs [0,4]' do
+        input = 'e8'
         result = game_convert.convert_to_cords(input)
-        expect(result).to eq([7,0])
+        expect(result).to eq([0,4])
       end
     end
   end
