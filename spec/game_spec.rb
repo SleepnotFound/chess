@@ -32,4 +32,25 @@ describe Game do
       end
     end
   end
+
+  describe '#select_piece' do
+    subject(:game_select) { described_class.new }
+    context 'when its active player\'s(white) turn to pick a piece on board' do
+      context 'then chooses empty cell,cell with black piece ,then a cell with white piece' do
+        before do
+          empty_cell = "d8"
+          invalid_cell = "e8"
+          valid_cell = "e1"
+          allow(game_select).to receive(:get_input).and_return(empty_cell, invalid_cell, valid_cell)
+
+        end
+        it 'outputs error message twice' do
+          error_message = "no pieces found. please select another cell"
+          expect(game_select).to receive(:puts).with(error_message).twice
+          game_select.set_game_pieces
+          game_select.select_piece
+        end
+      end
+    end
+  end
 end

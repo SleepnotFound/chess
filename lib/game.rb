@@ -25,14 +25,22 @@ class Game
   end
 
   def player_turn
-    input = convert_to_cords(verify_input)
-    p input
+    #input = convert_to_cords(verify_input)
+    #p input
     #active_pieces = self.active_player.pieces
-    selected = self.active_player.pieces.find do |piece|
-      piece.position == input
-    end
-    puts "selected: #{selected} "
+    selected = select_piece
+    puts "selected object: #{selected} "
+    p active_player
     #display_choices(selected)
+  end
+
+  def select_piece
+    input = convert_to_cords(verify_input)
+    until selected = self.active_player.pieces.find { |piece| piece.position == input }
+      puts "no pieces found. please select another cell"
+      input = convert_to_cords(verify_input)
+    end
+    selected
   end
 
   # y searches array in array. x searches cell in array(y) 
@@ -59,11 +67,14 @@ class Game
 
   def set_game_pieces
     #temp initialized pieces todo: set player pieces based on save file or default newgame
-    t1 = King.new(white + king, [4,7])
-    t2 = King.new(black + king, [4,0])
+    t1 = King.new(white + king, [7,4])
+    t3 = King.new(white + king, [3,3])
+    t2 = King.new(black + king, [0,4])
     self.player1.pieces << t1
+    self.player1.pieces << t3
     self.player2.pieces << t2
     self.board.white_pieces << self.player1.pieces[0]
+    self.board.white_pieces << self.player1.pieces[1]
     self.board.black_pieces << self.player2.pieces[0]
   end
 

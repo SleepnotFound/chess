@@ -24,20 +24,20 @@ class Board
     @board.each_with_index do | row, r |
       row.each_with_index do | tile, t |
         if r.even? 
-          @board[r][t] = t.even? ? Tile.new('white', insert_piece(t, r)) : Tile.new('black', insert_piece(t, r))
+          @board[r][t] = t.even? ? Tile.new('white', insert_piece(r, t)) : Tile.new('black', insert_piece(r, t))
         elsif r.odd?
-          @board[r][t] = t.odd? ? Tile.new('white', insert_piece(t, r)) : Tile.new('black', insert_piece(t, r))
+          @board[r][t] = t.odd? ? Tile.new('white', insert_piece(r, t)) : Tile.new('black', insert_piece(r, t))
         end
       end
     end
   end
 
-  def insert_piece(x, y)
+  def insert_piece(y, x)
     self.white_pieces.each do |piece|
-      return piece.piece if piece.position == [x, y]
+      return piece.piece if piece.position == [y, x]
     end
     self.black_pieces.each do |piece|
-      return piece.piece if piece.position == [x, y]
+      return piece.piece if piece.position == [y, x]
     end
     blank_space
   end
