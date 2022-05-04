@@ -19,19 +19,13 @@ class Game
     set_game_pieces
     self.board.build_board
     player_turn
-    #puts "#{active_player.name} available spots:"
-    #valid_moves = active_player.pieces[0].children
-    #valid_moves.each { |i| puts "#{i[0]}, #{i[1]}" }
   end
 
   def player_turn
-    #input = convert_to_cords(verify_input)
-    #p input
-    #active_pieces = self.active_player.pieces
     selected = select_piece
-    puts "selected object: #{selected} "
-    p active_player
-    #display_choices(selected)
+    puts "selected object: #{selected.piece}\navailable spots to move in:"
+    selected.make_children
+    puts "#{selected.children}"
   end
 
   def select_piece
@@ -50,25 +44,10 @@ class Game
     [y, x]
   end
 
-  def get_input
-    puts "#{active_player.name}, select a cell"
-    gets.chomp
-  end
-
-  def verify_input
-    input = get_input.downcase
-    until input.match?("\[a-h][1-8]") || input.match?("\[0-8][a-h]")
-      puts 'wrong input. only (a-h)(1-8)'
-      input = get_input.downcase
-    end
-    input = input[1] + input[0] if input.match?("\[0-8][a-h]")
-    input
-  end
-
   def set_game_pieces
     #temp initialized pieces todo: set player pieces based on save file or default newgame
     t1 = King.new(white + king, [7,4])
-    t3 = King.new(white + king, [3,3])
+    t3 = King.new(white + king, [0,3])
     t2 = King.new(black + king, [0,4])
     self.player1.pieces << t1
     self.player1.pieces << t3
@@ -81,6 +60,23 @@ class Game
   def name_players
     @player1.name = set_names(1)
     @player2.name = set_names(2)
+  end
+
+  def verify_input
+    input = get_input.downcase
+    until input.match?("\[a-h][1-8]") || input.match?("\[0-8][a-h]")
+      puts 'wrong input. only (a-h)(1-8)'
+      input = get_input.downcase
+    end
+    input = input[1] + input[0] if input.match?("\[0-8][a-h]")
+    input
+  end
+
+  private
+
+  def get_input
+    puts "#{active_player.name}, select a cell"
+    gets.chomp
   end
 
   def set_names(id)

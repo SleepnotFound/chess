@@ -9,17 +9,19 @@ class King
     @piece = piece
     @position = position
     @children = []
-    make_children(position)
   end
 
   def moves
     [[0,1], [1,1], [1,0], [1,-1], [0,-1], [-1,-1], [-1,0], [-1,1]]
   end
 
-  def make_children(position)
+  def make_children
     moves.each do |move|
       child = [position[0] + move[0], position[1] + move[1]]
-      @children.push(child) if child.all? { |n| n.between?(0, 7) }
+      if child.all? { |n| n.between?(0, 7) }
+        #logic code here. where to move king without being in check
+        @children.push(child)
+      end
     end
   end
 end
