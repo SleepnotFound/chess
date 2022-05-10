@@ -15,7 +15,7 @@ class Game
   end
 
   def play
-    set_game_pieces
+    set_game
     self.board.build_board
     player_turn
   end
@@ -52,17 +52,22 @@ class Game
     "#{y}#{x}"
   end
 
-  def set_game_pieces
+  def set_game
     #temp initialized pieces todo: set player pieces based on save file or default newgame
-    t1 = King.new(white + king, [7,4])
-    t3 = King.new(white + king, [0,3])
-    t2 = King.new(black + king, [0,4])
-    self.player1.pieces << t1
-    self.player1.pieces << t3
-    self.player2.pieces << t2
-    self.board.white_pieces << self.player1.pieces[0]
-    self.board.white_pieces << self.player1.pieces[1]
-    self.board.black_pieces << self.player2.pieces[0]
+    mode = verify_mode
+
+    if mode == '1'
+
+      t1 = King.new(white + king, [7,4])
+      t3 = King.new(white + king, [0,3])
+      t2 = King.new(black + king, [0,4])
+      self.player1.pieces << t1
+      self.player1.pieces << t3
+      self.player2.pieces << t2
+      self.board.white_pieces << self.player1.pieces[0]
+      self.board.white_pieces << self.player1.pieces[1]
+      self.board.black_pieces << self.player2.pieces[0]
+    end
   end
 
   def verify_input
@@ -75,10 +80,25 @@ class Game
     input
   end
 
+  def verify_mode
+    mode = get_mode
+    until %w[0 1 2].include?(mode)
+      #system "clear"
+      puts "wrong mode. try again"
+      mode = get_mode
+    end
+    mode
+  end
+
   private
 
   def get_input
     puts "#{active_player.name}, select a cell"
+    gets.chomp
+  end
+
+  def get_mode
+    puts "press:\n0) for instructions\n1) to load game\n2) for human vs computer"
     gets.chomp
   end
 end
