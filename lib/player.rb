@@ -5,8 +5,8 @@ class Player
 
   attr_accessor :name, :pieces 
 
-  def initialize(color)
-    @name = nil
+  def initialize(name, color)
+    @name = name
     @color = color
     @pieces = []
   end

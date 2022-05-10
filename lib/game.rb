@@ -9,13 +9,12 @@ class Game
   
   def initialize
     @board = Board.new
-    @player1 = Player.new(white)
-    @player2 = Player.new(black)
+    @player1 = Player.new('white', white)
+    @player2 = Player.new('black', black)
     @active_player = self.player1
   end
 
   def play
-    name_players
     set_game_pieces
     self.board.build_board
     player_turn
@@ -25,23 +24,32 @@ class Game
     selected = select_piece
     puts "selected object: #{selected.piece}\navailable spots to move in:"
     selected.make_children
-    puts "#{selected.children}"
+    selected.children.each do |child|
+      puts convert_to_board_cords(child)
+    end
+    #puts "#{selected.children}"
   end
 
   def select_piece
-    input = convert_to_cords(verify_input)
+    input = convert_to_array_cords(verify_input)
     until selected = self.active_player.pieces.find { |piece| piece.position == input }
       puts "no pieces found. please select another cell"
-      input = convert_to_cords(verify_input)
+      input = convert_to_array_cords(verify_input)
     end
     selected
   end
 
-  # y searches array in array. x searches cell in array(y) 
-  def convert_to_cords(input)
+  # y searches arrays in array. x searches cell in array(y) 
+  def convert_to_array_cords(input)
     x = input[0].ord - 97
     y = 8 - input[1].to_i
     [y, x]
+  end
+
+  def convert_to_board_cords(input)
+    x = 8 - input[0]
+    y = (input[1] + 97).chr
+    "#{y}#{x}"
   end
 
   def set_game_pieces
@@ -55,11 +63,6 @@ class Game
     self.board.white_pieces << self.player1.pieces[0]
     self.board.white_pieces << self.player1.pieces[1]
     self.board.black_pieces << self.player2.pieces[0]
-  end
-
-  def name_players
-    @player1.name = set_names(1)
-    @player2.name = set_names(2)
   end
 
   def verify_input
@@ -76,11 +79,6 @@ class Game
 
   def get_input
     puts "#{active_player.name}, select a cell"
-    gets.chomp
-  end
-
-  def set_names(id)
-    puts "Player #{id}, what is you name?"
     gets.chomp
   end
 end

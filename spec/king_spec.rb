@@ -9,6 +9,7 @@ describe King do
       subject(:king_children) { described_class.new(black + king, [4,7]) }
       it 'makes 5 available children' do
         correct_set = [[5,7], [5,6], [4,6], [3,6], [3,7]]
+        king_children.make_children
         children = king_children.children
         expect(children).to eq(correct_set)
       end

@@ -22,13 +22,24 @@ describe Game do
     end
   end
 
-  describe '#convert_to_cords' do
+  describe '#convert_to_array_cords' do
     subject(:game_convert) { described_class.new }
     context 'when input is e8' do
       it 'outputs [0,4]' do
         input = 'e8'
-        result = game_convert.convert_to_cords(input)
+        result = game_convert.convert_to_array_cords(input)
         expect(result).to eq([0,4])
+      end
+    end
+  end
+
+  describe '#convert_to_board_cords' do
+    subject(:game_convert) { described_class.new }
+    context 'when given [4,4]' do
+      it 'outputs e4' do
+        input = [4,4]
+        result = game_convert.convert_to_board_cords(input)
+        expect(result).to eq('e4')
       end
     end
   end
@@ -38,7 +49,7 @@ describe Game do
     context 'when its active player\'s(white) turn to pick a piece on board' do
       context 'then chooses empty cell,cell with black piece ,then a cell with white piece' do
         before do
-          empty_cell = "d8"
+          empty_cell = "a8"
           invalid_cell = "e8"
           valid_cell = "e1"
           allow(game_select).to receive(:get_input).and_return(empty_cell, invalid_cell, valid_cell)
