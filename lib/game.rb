@@ -2,6 +2,7 @@ require_relative 'board'
 require_relative 'player'
 require_relative 'pieces'
 require_relative 'load_save'
+require_relative 'rule_checker'
 require 'yaml'
 
 class Game 
@@ -25,10 +26,14 @@ class Game
 
   def player_turn
     selected = select_piece
+    opponent = active_player == player1 ? player2 : player1
     puts "selected object: #{selected.piece + reset}\navailable spots to move in:"
-    selected.children.each do |child|
-      puts convert_to_board_cords(child)
-    end
+    rule_checker(selected, opponent.pieces)
+    
+    
+    #selected.children.each do |child|
+    #  puts convert_to_board_cords(child)
+    #end
   end
 
   def select_piece
