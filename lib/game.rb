@@ -10,15 +10,15 @@ class Game
   attr_accessor :board, :player1, :player2, :active_player
   
   def initialize
-    @board = Board.new
     @player1 = Player.new('white', white)
     @player2 = Player.new('black', black)
+    @board = Board.new(@player1.pieces, @player2.pieces)
     @active_player = self.player1
   end
 
   def play
     set_game
-    self.board.build_board
+    self.board.build_board(player1.pieces, player2.pieces)
     player_turn
     #save_game(to_yaml)
   end
@@ -34,7 +34,8 @@ class Game
   def player_turn
     selected = select_piece
     puts "selected object: #{selected.piece}\navailable spots to move in:"
-    selected.make_children
+     #the line underneath can be deleted as long as ALL pieces have children
+    selected.make_children if selected.children.empty?
     selected.children.each do |child|
       puts convert_to_board_cords(child)
     end
@@ -72,8 +73,6 @@ class Game
       self.player1 = data[:player1]
       self.player2 = data[:player2]
       self.active_player = data[:active_player]
-      self.player1.pieces.each { |piece| self.board.white_pieces << piece }
-      self.player2.pieces.each { |piece| self.board.black_pieces << piece }
     elsif mode == '2'
       #new human vs computer
     end

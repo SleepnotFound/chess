@@ -12,6 +12,7 @@ class King
     @piece = piece
     @position = position
     @children = []
+    make_children if @children.empty?
   end
 
   def make_children

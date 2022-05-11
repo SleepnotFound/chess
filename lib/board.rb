@@ -8,16 +8,22 @@ class Board
   attr_reader :board, :black_pieces, :white_pieces
   #attr_accessor :board
 
-  def initialize 
+  def initialize(player_set_1, player_set_2) 
     @board = Array.new(8) { Array.new(8) }
-    @white_pieces = []
-    @black_pieces = []
+    @white_pieces = player_set_1
+    @black_pieces = player_set_2
     update_board
   end
 
-  def build_board
+  def build_board(player1, player2)
+    update_pieces(player1, player2)
     update_board
     display_board
+  end
+
+  def update_pieces(set_1, set_2)
+    set_1.each { |piece| white_pieces << piece }
+    set_2.each { |piece| black_pieces << piece }
   end
 
   def update_board
