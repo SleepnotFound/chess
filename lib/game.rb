@@ -1,6 +1,8 @@
 require_relative 'board'
 require_relative 'player'
 require_relative 'pieces'
+require_relative 'load_save'
+require 'yaml'
 
 class Game 
   include Pieces
@@ -18,6 +20,15 @@ class Game
     set_game
     self.board.build_board
     player_turn
+    #save_game(to_yaml)
+  end
+
+  def to_yaml
+    YAML.dump({
+      player1: @player1,
+      player2: @player2,
+      active_player: @active_player
+    })
   end
 
   def player_turn
@@ -27,7 +38,6 @@ class Game
     selected.children.each do |child|
       puts convert_to_board_cords(child)
     end
-    #puts "#{selected.children}"
   end
 
   def select_piece
@@ -53,20 +63,19 @@ class Game
   end
 
   def set_game
-    #temp initialized pieces todo: set player pieces based on save file or default newgame
     mode = verify_mode
-
-    if mode == '1'
-
-      t1 = King.new(white + king, [7,4])
-      t3 = King.new(white + king, [0,3])
-      t2 = King.new(black + king, [0,4])
-      self.player1.pieces << t1
-      self.player1.pieces << t3
-      self.player2.pieces << t2
-      self.board.white_pieces << self.player1.pieces[0]
-      self.board.white_pieces << self.player1.pieces[1]
-      self.board.black_pieces << self.player2.pieces[0]
+    if mode == '0'
+      #display instructions/controls then jump to newgame
+    elsif mode == '1'
+      #load game
+      data = load_game
+      self.player1 = data[:player1]
+      self.player2 = data[:player2]
+      self.active_player = data[:active_player]
+      self.player1.pieces.each { |piece| self.board.white_pieces << piece }
+      self.player2.pieces.each { |piece| self.board.black_pieces << piece }
+    elsif mode == '2'
+      #new human vs computer
     end
   end
 
