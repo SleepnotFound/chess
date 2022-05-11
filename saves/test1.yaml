@@ -1,5 +1,5 @@
 ---
-:player1: &1 !ruby/object:Player
+:player1: !ruby/object:Player
   name: white
   color: "\e[97m"
   pieces:
@@ -35,7 +35,7 @@
       - 2
     - - 0
       - 2
-:player2: !ruby/object:Player
+:player2: &1 !ruby/object:Player
   name: black
   color: "\e[30m"
   pieces:
@@ -44,5 +44,15 @@
     position:
     - 0
     - 4
-    children: []
+    children:
+    - - 0
+      - 5
+    - - 1
+      - 5
+    - - 1
+      - 4
+    - - 1
+      - 3
+    - - 0
+      - 3
 :active_player: *1

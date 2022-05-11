@@ -18,24 +18,14 @@ class Game
 
   def play
     set_game
-    self.board.build_board(player1.pieces, player2.pieces)
+    board.build_board(player1.pieces, player2.pieces)
     player_turn
     #save_game(to_yaml)
   end
 
-  def to_yaml
-    YAML.dump({
-      player1: @player1,
-      player2: @player2,
-      active_player: @active_player
-    })
-  end
-
   def player_turn
     selected = select_piece
-    puts "selected object: #{selected.piece}\navailable spots to move in:"
-     #the line underneath can be deleted as long as ALL pieces have children
-    selected.make_children if selected.children.empty?
+    puts "selected object: #{selected.piece + reset}\navailable spots to move in:"
     selected.children.each do |child|
       puts convert_to_board_cords(child)
     end
@@ -50,31 +40,19 @@ class Game
     selected
   end
 
-  # y searches arrays in array. x searches cell in array(y) 
-  def convert_to_array_cords(input)
-    x = input[0].ord - 97
-    y = 8 - input[1].to_i
-    [y, x]
-  end
-
-  def convert_to_board_cords(input)
-    x = 8 - input[0]
-    y = (input[1] + 97).chr
-    "#{y}#{x}"
-  end
-
   def set_game
-    mode = verify_mode
-    if mode == '0'
-      #display instructions/controls then jump to newgame
-    elsif mode == '1'
-      #load game
+    case mode = verify_mode
+    when '0'
+      #display instructions/controls then jump to new game
+    when '1'
       data = load_game
       self.player1 = data[:player1]
       self.player2 = data[:player2]
       self.active_player = data[:active_player]
-    elsif mode == '2'
+    when '2'
       #new human vs computer
+    else
+      puts "game could not set up..."
     end
   end
 
@@ -96,6 +74,26 @@ class Game
       mode = get_mode
     end
     mode
+  end
+
+  def convert_to_array_cords(input)
+    x = input[0].ord - 97
+    y = 8 - input[1].to_i
+    [y, x]
+  end
+
+  def convert_to_board_cords(input)
+    x = 8 - input[0]
+    y = (input[1] + 97).chr
+    "#{y}#{x}"
+  end
+
+  def to_yaml
+    YAML.dump({
+      player1: @player1,
+      player2: @player2,
+      active_player: @active_player
+    })
   end
 
   private
