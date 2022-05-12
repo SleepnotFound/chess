@@ -13,23 +13,26 @@ class Game
   def initialize
     @player1 = Player.new('white', white)
     @player2 = Player.new('black', black)
-    @board = Board.new(@player1.pieces, @player2.pieces)
+    @board = Board.new
     @active_player = self.player1
   end
 
   def play
     set_game
-    board.build_board(player1.pieces, player2.pieces)
+    board.update_pieces(player1.pieces, player2.pieces)
+    board.build_board
     player_turn
     #save_game(to_yaml)
   end
 
   def player_turn
     selected = select_piece
+    system 'clear'
     opponent = active_player == player1 ? player2 : player1
     legal_moves = rule_checker(selected, opponent.pieces)
     board.visualize_moves(legal_moves, selected.position)
-    puts 'select tile to move to(cyan dots)'
+    puts "selected piece: #{selected.piece + reset}"
+    puts 'select a tile to move into(cyan dots)'
   end
 
   def select_piece
@@ -55,6 +58,7 @@ class Game
     else
       puts "game could not set up..."
     end
+    system 'clear'
   end
 
   def verify_input
@@ -70,10 +74,10 @@ class Game
   def verify_mode
     mode = get_mode
     until %w[0 1 2].include?(mode)
-      #system "clear"
       puts "wrong mode. try again"
       mode = get_mode
     end
+    system "clear"
     mode
   end
 

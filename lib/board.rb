@@ -5,25 +5,23 @@ require_relative 'pieces'
 class Board 
   include Pieces
 
-  attr_reader :board, :black_pieces, :white_pieces
-  #attr_accessor :board
+  attr_reader :board
+  attr_accessor :black_pieces, :white_pieces
 
-  def initialize(player_set_1, player_set_2) 
+  def initialize
     @board = Array.new(8) { Array.new(8) }
-    @white_pieces = player_set_1
-    @black_pieces = player_set_2
-    update_board
+    @white_pieces = nil
+    @black_pieces = nil
   end
 
-  def build_board(player1, player2)
-    update_pieces(player1, player2)
+  def build_board
     update_board
     display_board
   end
 
   def update_pieces(set_1, set_2)
-    set_1.each { |piece| white_pieces << piece }
-    set_2.each { |piece| black_pieces << piece }
+    self.white_pieces = set_1
+    self.black_pieces = set_2
   end
 
   def update_board
