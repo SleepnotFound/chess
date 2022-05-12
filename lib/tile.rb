@@ -27,11 +27,11 @@ class Tile
     end
   end
 
-  def black_row(piece)
-    "\e[100m  #{piece}   \e[0m" 
+  def black_row(piece, t_color = tile_black)
+    "#{t_color}  #{piece}   \e[0m" 
   end
   
-  def white_row(piece)
-    "\e[47m  #{piece}   \e[0m" 
+  def white_row(piece, t_color = tile_white)
+    "#{t_color}  #{piece}   \e[0m" 
   end
 end
