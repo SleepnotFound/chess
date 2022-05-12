@@ -5,9 +5,14 @@ include Pieces
 describe Board do
   describe '#build_board' do
     subject(:make_board) { described_class.new }
-    context 'when a board is initialized' do
+    context 'when build_board is called' do
+      before do
+        make_board.instance_variable_set(:@black_pieces, [])
+        make_board.instance_variable_set(:@white_pieces, [])
+      end
       it 'all items inside nested array should be a Tile class' do
         game = make_board
+        game.update_board
         results = []
         game.board.each do |row|
           a = row.all?(Tile)
@@ -33,7 +38,7 @@ describe Board do
       end
     end
     context 'when a black_king is present at location 4,0' do
-      let(:b_king) { double('king', position: [4,0], piece: black_king) }
+      let(:b_king) { double('king', position: [4,0], piece: black + king) }
       before do
         piece_location.instance_variable_set(:@black_pieces, [b_king])
         piece_location.instance_variable_set(:@white_pieces, [])

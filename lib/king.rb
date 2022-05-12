@@ -12,14 +12,14 @@ class King
     @position = position
     @type = 'king'
     @children = []
-    make_children if @children.empty?
+    make_children
   end
 
   def make_children
+    @children = []
     King::MOVES.each do |move|
       child = [position[0] + move[0], position[1] + move[1]]
       if child.all? { |n| n.between?(0, 7) }
-        #logic code here. where to move king without being in check
         @children.push(child)
       end
     end

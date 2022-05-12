@@ -63,19 +63,19 @@ describe Game do
   describe '#select_piece' do
     subject(:game_select) { described_class.new }
     context 'when its active player\'s(white) turn to pick a piece on board' do
-      context 'then chooses empty cell,cell with black piece ,then a cell with white piece' do
+      let(:king_piece) { double('King', type: 'king', position: [7,4]) }
+      let(:active_player) { double('player', pieces: [king_piece]) }
+      context 'then chooses empty cell,cell with non-player piece ,then a cell with white piece' do
         before do
           empty_cell = "a8"
           invalid_cell = "e8"
           valid_cell = "e1"
-          allow(game_select).to receive(:get_input).and_return(empty_cell, invalid_cell, valid_cell)
-          allow(game_select).to receive(:verify_mode).and_return('1')
-
+          game_select.instance_variable_set(:@active_player, active_player)
+          allow(game_select).to receive(:verify_input).and_return(empty_cell, invalid_cell, valid_cell)
         end
         it 'outputs error message twice' do
           error_message = "no pieces found. please select another cell"
           expect(game_select).to receive(:puts).with(error_message).twice
-          game_select.set_game
           game_select.select_piece
         end
       end

@@ -4,7 +4,6 @@ include Pieces
 
 describe King do
   describe '#make_children' do
-    #children are available spots king can move from its current position.
     context 'when the starting position is [4,7]' do
       subject(:king_children) { described_class.new(black + king, [4,7]) }
       it 'makes 5 available children' do
