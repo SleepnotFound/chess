@@ -5,23 +5,28 @@ require_relative 'pieces'
 class Tile
   include Pieces
 
-  attr_reader :top, :middle, :bottom, :piece
+  attr_reader :buffer, :middle, :piece, :color
 
-  def initialize(tile, piece = blank_space)
-    @top = nil
-    @middle = nil
-    @bottom = nil
+  def initialize(tile_color, piece = blank_space)
     @piece = piece
-    build_tile(tile, piece)
-  end
-
-  def build_tile(tile, piece)
-    @top    = row(tile, blank_space)
-    @middle = row(tile,piece)
-    @bottom = row(tile, blank_space)
+    @color = tile_color
+    @buffer = "#{self.color}  #{blank_space}   \e[0m"
+    @middle = "#{self.color}  #{self.piece}   \e[0m"
   end
 
   def row(color, piece)
     "#{color}  #{piece}   \e[0m"
   end
+
+  def piece=(piece)
+    @piece = piece
+    @middle = "#{color}  #{piece}   \e[0m"
+  end
+
+  def color=(color)
+    @color = color
+    @buffer = "#{color}  #{blank_space}   \e[0m"
+    @middle = "#{color}  #{piece}   \e[0m"
+  end
+
 end
