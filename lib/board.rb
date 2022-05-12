@@ -30,9 +30,9 @@ class Board
     @board.each_with_index do | row, r |
       row.each_with_index do | tile, t |
         if r.even? 
-          @board[r][t] = t.even? ? Tile.new('white', insert_piece(r, t)) : Tile.new('black', insert_piece(r, t))
+          @board[r][t] = t.even? ? Tile.new(tile_white, insert_piece(r, t)) : Tile.new(tile_black, insert_piece(r, t))
         elsif r.odd?
-          @board[r][t] = t.odd? ? Tile.new('white', insert_piece(r, t)) : Tile.new('black', insert_piece(r, t))
+          @board[r][t] = t.odd? ? Tile.new(tile_white, insert_piece(r, t)) : Tile.new(tile_black, insert_piece(r, t))
         end
       end
     end
@@ -69,6 +69,12 @@ class Board
       arr.each { |tile| str += tile.bottom }
     end
     str += "\n"
+  end
+
+  def visualize_moves(array)
+    array.each do |tile|
+      board[tile[0]][tile[1]] = Tile.new('blue', )
+    end
   end
 
 end
