@@ -62,19 +62,22 @@ class Board
     str = ""
     case row
     when 1
-      arr.each { |tile| str += tile.top }
+      arr.each { |tile| str += tile.buffer }
     when 2
       arr.each { |tile| str += tile.middle }
     when 3
-      arr.each { |tile| str += tile.bottom }
+      arr.each { |tile| str += tile.buffer }
     end
     str += "\n"
   end
 
-  def visualize_moves(array)
-    array.each do |tile|
-      board[tile[0]][tile[1]] = Tile.new('blue', )
+  def visualize_moves(array, position)
+    board[position[0]][position[1]].color = b_cyan
+    array.each do |t|
+      board[t[0]][t[1]].piece = cyan + circle
     end
+    display_board
+
   end
 
 end

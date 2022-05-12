@@ -28,13 +28,8 @@ class Game
     selected = select_piece
     opponent = active_player == player1 ? player2 : player1
     legal_moves = rule_checker(selected, opponent.pieces)
-    
-    #puts "selected object: #{selected.piece + reset}\navailable spots to move in:"
-    legal_moves.each do |child|
-      #puts convert_to_board_cords(child)
-      p child
-    end
-    
+    board.visualize_moves(legal_moves, selected.position)
+    puts 'select tile to move to(cyan dots)'
   end
 
   def select_piece
@@ -105,7 +100,7 @@ class Game
   private
 
   def get_input
-    puts "#{active_player.name}, select a cell"
+    puts "#{active_player.name}'s turn, please select a tile"
     gets.chomp
   end
 
