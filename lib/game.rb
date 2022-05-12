@@ -27,13 +27,14 @@ class Game
   def player_turn
     selected = select_piece
     opponent = active_player == player1 ? player2 : player1
-    puts "selected object: #{selected.piece + reset}\navailable spots to move in:"
-    rule_checker(selected, opponent.pieces)
+    legal_moves = rule_checker(selected, opponent.pieces)
     
+    #puts "selected object: #{selected.piece + reset}\navailable spots to move in:"
+    legal_moves.each do |child|
+      #puts convert_to_board_cords(child)
+      p child
+    end
     
-    #selected.children.each do |child|
-    #  puts convert_to_board_cords(child)
-    #end
   end
 
   def select_piece
