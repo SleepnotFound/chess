@@ -30,34 +30,43 @@ class Game
   end
 
   def player_turn
-    puts "Player #{active_player.name}\'s turn"
-    selected = select_piece(get_input)
-    #system 'clear'
     opponent = active_player == player1 ? player2 : player1
+
+    puts "Player #{active_player.name}\'s turn"
+    user_input = convert_to_array_cords(player_input)
+    selected = select_piece(user_input)
+    #system 'clear'
     legal_moves = move_checker(selected, opponent.pieces)
     board.visualize_moves(legal_moves, selected.position)
     puts "selected piece: #{selected.piece + reset}\nType \'back\' to go back or"
     new_move = verify_legal_movement(legal_moves)
+    p "item returned:#{new_move}"
     selected.update(new_move)
     board.build_board
   end
 
+  def player_input
+    loop do
+       verified_input = verify_input(get_input)
+       return verified_input if verified_input 
+    end
+  end
+
   def select_piece(input)
-    input = convert_to_array_cords(verify_input(input))
     until selected = self.active_player.pieces.find { |piece| piece.position == input }
       puts "no pieces found. please select another cell"
-      input = convert_to_array_cords(verify_input(get_input))
+      input = convert_to_array_cords(player_input)
     end
     selected
   end
 
   def verify_legal_movement(movements)
     input = get_input
-    input = convert_to_array_cords(input)
-
-    until movements.include?(input)
-      puts 'Not valid. choose a tile with a cyan dot.'
-      input = get_input
+    input = convert_to_array_cords(verify_input(input)) unless input == 'back' || verify_input(input) == nil
+    p "#{input} vs #{movements}"
+    until movements.include?(input) || input == 'back'
+      puts 'not valid. chose a tile with a cyan dot.'
+      input = verify_legal_movement(movements)
     end
     input
   end
@@ -80,12 +89,13 @@ class Game
   end
 
   def verify_input(input)
-    until input.match?("\[a-h][1-8]") || input.match?("\[0-8][a-h]")
+    if input.match?("\[a-h][1-8]") || input.match?("\[0-8][a-h]")
+      input = input[1] + input[0] if input.match?("\[0-8][a-h]")
+      input
+    else
       puts 'wrong input. only (a-h)(1-8)'
-      input = get_input
+      nil
     end
-    input = input[1] + input[0] if input.match?("\[0-8][a-h]")
-    input
   end
 
   def verify_mode
