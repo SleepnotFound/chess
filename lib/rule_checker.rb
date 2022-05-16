@@ -1,7 +1,7 @@
 require_relative 'pieces'
 include Pieces
 
-def rule_checker(selected, opponent_set)
+def move_checker(selected, opponent_set)
   case selected.type
    #Ensures king does not move into check 
   when 'king'
@@ -16,3 +16,4 @@ def rule_checker(selected, opponent_set)
     puts "type of selected piece was not found"
   end
 end
+

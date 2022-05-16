@@ -24,4 +24,9 @@ class King
       end
     end
   end
+
+  def update(position)
+    @position = position
+    make_children
+  end
 end
