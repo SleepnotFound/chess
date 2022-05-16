@@ -21,27 +21,45 @@ class Game
     set_game
     board.update_pieces(player1.pieces, player2.pieces)
     board.build_board
-    player_turn
+    game_over = false
+    until game_over
+      player_turn
+      self.active_player = active_player == player1 ? player2 : player1
+    end
     #save_game(to_yaml)
   end
 
   def player_turn
-    selected = select_piece
-    system 'clear'
+    puts "Player #{active_player.name}\'s turn"
+    selected = select_piece(get_input)
+    #system 'clear'
     opponent = active_player == player1 ? player2 : player1
-    legal_moves = rule_checker(selected, opponent.pieces)
+    legal_moves = move_checker(selected, opponent.pieces)
     board.visualize_moves(legal_moves, selected.position)
-    puts "selected piece: #{selected.piece + reset}"
-    puts 'select a tile to move into(cyan dots)'
+    puts "selected piece: #{selected.piece + reset}\nType \'back\' to go back or"
+    new_move = verify_legal_movement(legal_moves)
+    selected.update(new_move)
+    board.build_board
   end
 
-  def select_piece
-    input = convert_to_array_cords(verify_input)
+  def select_piece(input)
+    input = convert_to_array_cords(verify_input(input))
     until selected = self.active_player.pieces.find { |piece| piece.position == input }
       puts "no pieces found. please select another cell"
-      input = convert_to_array_cords(verify_input)
+      input = convert_to_array_cords(verify_input(get_input))
     end
     selected
+  end
+
+  def verify_legal_movement(movements)
+    input = get_input
+    input = convert_to_array_cords(input)
+
+    until movements.include?(input)
+      puts 'Not valid. choose a tile with a cyan dot.'
+      input = get_input
+    end
+    input
   end
 
   def set_game
@@ -61,11 +79,10 @@ class Game
     system 'clear'
   end
 
-  def verify_input
-    input = get_input.downcase
+  def verify_input(input)
     until input.match?("\[a-h][1-8]") || input.match?("\[0-8][a-h]")
       puts 'wrong input. only (a-h)(1-8)'
-      input = get_input.downcase
+      input = get_input
     end
     input = input[1] + input[0] if input.match?("\[0-8][a-h]")
     input
@@ -104,8 +121,8 @@ class Game
   private
 
   def get_input
-    puts "#{active_player.name}'s turn, please select a tile"
-    gets.chomp
+    puts "please select a tile"
+    gets.chomp.downcase
   end
 
   def get_mode
