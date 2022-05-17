@@ -20,7 +20,6 @@ class Game
   def play
     set_game
     board.update_pieces(player1.pieces, player2.pieces)
-    board.build_board
     game_over = false
     until game_over
       player_turn
@@ -31,18 +30,22 @@ class Game
 
   def player_turn
     opponent = active_player == player1 ? player2 : player1
-    puts "Player #{active_player.name}\'s turn"
+    loop do
+      board.build_board
+      puts "Player #{active_player.name}\'s turn"
 
-    user_input = convert_to_array_cords(player_input)
-    selected = select_piece(user_input)
-    
-    legal_moves = move_checker(selected, opponent.pieces)
-    board.visualize_moves(legal_moves, selected.position)
-    puts "selected piece: #{selected.piece + reset}\nType \'back\' to go back or"
-    new_move = verify_legal_option(legal_moves)
-    p "item returned:#{new_move}"
-    selected.update(new_move)
-    board.build_board
+      user_input = convert_to_array_cords(player_input)
+      selected = select_piece(user_input)
+      legal_moves = move_checker(selected, opponent.pieces)
+      
+      board.visualize_moves(legal_moves, selected.position)
+      puts "selected piece: #{selected.piece + reset}\nType \'back\' to go back or"
+      new_move = verify_legal_option(legal_moves)
+      unless new_move == 'back'
+        selected.update(new_move) 
+        break
+      end
+    end
   end
 
   def player_input

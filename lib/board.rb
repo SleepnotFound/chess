@@ -70,12 +70,13 @@ class Board
   end
 
   def visualize_moves(array, position)
+    original = board
     board[position[0]][position[1]].color = b_cyan
     array.each do |t|
       board[t[0]][t[1]].piece = cyan + circle
     end
     display_board
-
+    @board = original
   end
 
 end
