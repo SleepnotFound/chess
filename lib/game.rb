@@ -31,15 +31,15 @@ class Game
 
   def player_turn
     opponent = active_player == player1 ? player2 : player1
-
     puts "Player #{active_player.name}\'s turn"
+
     user_input = convert_to_array_cords(player_input)
     selected = select_piece(user_input)
-    #system 'clear'
+    
     legal_moves = move_checker(selected, opponent.pieces)
     board.visualize_moves(legal_moves, selected.position)
     puts "selected piece: #{selected.piece + reset}\nType \'back\' to go back or"
-    new_move = verify_legal_movement(legal_moves)
+    new_move = verify_legal_option(legal_moves)
     p "item returned:#{new_move}"
     selected.update(new_move)
     board.build_board
@@ -60,13 +60,12 @@ class Game
     selected
   end
 
-  def verify_legal_movement(movements)
+  def verify_legal_option(movements)
     input = get_input
     input = convert_to_array_cords(verify_input(input)) unless input == 'back' || verify_input(input) == nil
-    p "#{input} vs #{movements}"
     until movements.include?(input) || input == 'back'
-      puts 'not valid. chose a tile with a cyan dot.'
-      input = verify_legal_movement(movements)
+      puts 'not valid. choose a tile with a cyan dot.'
+      input = verify_legal_option(movements)
     end
     input
   end
@@ -89,8 +88,8 @@ class Game
   end
 
   def verify_input(input)
-    if input.match?("\[a-h][1-8]") || input.match?("\[0-8][a-h]")
-      input = input[1] + input[0] if input.match?("\[0-8][a-h]")
+    if input.match?(/\b[a-h][1-8]\b|\b[0-8][a-h]\b/) 
+      input = input[1] + input[0] if input.match?(/\b[0-8][a-h]\b/)
       input
     else
       puts 'wrong input. only (a-h)(1-8)'
@@ -104,7 +103,6 @@ class Game
       puts "wrong mode. try again"
       mode = get_mode
     end
-    system "clear"
     mode
   end
 

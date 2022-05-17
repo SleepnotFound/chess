@@ -3,21 +3,26 @@ require './lib/game'
 describe Game do
   describe '#verify_input' do
     subject(:game_verify) { described_class.new }
-    context 'when user inputs A1' do
-      it 'returns input as a1' do
-        input = 'A1'
-        allow(game_verify).to receive(:get_input).and_return(input)
-        result = game_verify.verify_input
+    context 'when method receives a1' do
+      it 'returns a1' do
+        input = 'a1'
+        result = game_verify.verify_input(input)
         expect(result).to eq('a1')
       end
     end
-
-    context 'when user inputs 8D' do
-      it "returns input as d8" do
-        input = '8D'
-        allow(game_verify).to receive(:get_input).and_return(input)
-        result = game_verify.verify_input
+    context 'when method receives 8d' do
+      it "returns d8" do
+        input = '8d'
+        result = game_verify.verify_input(input)
         expect(result).to eq('d8')
+      end
+    end
+    context 'when method receives 44aaa' do
+      it 'returns nil' do
+        input = '44aaa'
+        expect(game_verify).to receive(:puts).with('wrong input. only (a-h)(1-8)')
+        result = game_verify.verify_input(input)
+        expect(result).to eq(nil)
       end
     end
   end
@@ -67,17 +72,46 @@ describe Game do
       let(:active_player) { double('player', pieces: [king_piece]) }
       context 'then chooses empty cell,cell with non-player piece ,then a cell with white piece' do
         before do
-          empty_cell = "a8"
-          invalid_cell = "e8"
-          valid_cell = "e1"
+          second_try = "e8"
+          third_try = "e1"
           game_select.instance_variable_set(:@active_player, active_player)
-          allow(game_select).to receive(:verify_input).and_return(empty_cell, invalid_cell, valid_cell)
+          allow(game_select).to receive(:player_input).and_return(second_try, third_try)
         end
         it 'outputs error message twice' do
+          first_try = "a8"
           error_message = "no pieces found. please select another cell"
           expect(game_select).to receive(:puts).with(error_message).twice
-          game_select.select_piece
+          game_select.select_piece(first_try)
         end
+      end
+    end
+  end
+
+  describe '#verify_legal_option' do
+    subject(:game_options) { described_class.new }
+    context 'when user inputs \'back\'' do
+      it 'returns the string \'back\'' do
+        allow(game_options).to receive(:get_input).and_return('back')
+        movements = [[0,5],[1,5]]
+        result = game_options.verify_legal_option(movements)
+        expect(result).to eq('back')
+      end
+    end
+    context 'when user inputs a legal move from array movements' do
+      it 'returns the array element' do
+        allow(game_options).to receive(:get_input).and_return('f7')
+        movements = [[0,5],[1,5]]
+        result = game_options.verify_legal_option(movements)
+        expect(result).to eq([1,5])
+      end
+    end
+    context 'when user inputs an illegal move' do
+      it 'outputs error message once' do
+        allow(game_options).to receive(:get_input).and_return('f1', 'f8')
+        error_message = 'not valid. choose a tile with a cyan dot.'
+        movements = [[0,5],[1,5]]
+        expect(game_options).to receive(:puts).with(error_message).once
+        game_options.verify_legal_option(movements)
       end
     end
   end
