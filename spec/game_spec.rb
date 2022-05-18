@@ -25,6 +25,13 @@ describe Game do
         expect(result).to eq(nil)
       end
     end
+    context 'when method receives \'save\'' do
+      it 'returns the string \'save\'' do
+        input = 'save'
+        result = game_verify.verify_input(input)
+        expect(result).to eq('save')
+      end
+    end
   end
 
   describe '#verify_mode' do
@@ -65,7 +72,7 @@ describe Game do
     end
   end
 
-  describe '#select_piece' do
+  describe '#find_piece' do
     subject(:game_select) { described_class.new }
     context 'when its active player\'s(white) turn to pick a piece on board' do
       let(:king_piece) { double('King', type: 'king', position: [7,4]) }
@@ -75,13 +82,13 @@ describe Game do
           second_try = "e8"
           third_try = "e1"
           game_select.instance_variable_set(:@active_player, active_player)
-          allow(game_select).to receive(:player_input).and_return(second_try, third_try)
+          allow(game_select).to receive(:get_player_input).and_return(second_try, third_try)
         end
         it 'outputs error message twice' do
           first_try = "a8"
           error_message = "no pieces found. please select another cell"
           expect(game_select).to receive(:puts).with(error_message).twice
-          game_select.select_piece(first_try)
+          game_select.find_piece(first_try)
         end
       end
     end

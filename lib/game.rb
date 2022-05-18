@@ -33,34 +33,61 @@ class Game
     loop do
       board.build_board
       puts "Player #{active_player.name}\'s turn"
+      selected_piece = nil
 
-      user_input = convert_to_array_cords(player_input)
-      selected = select_piece(user_input)
-      legal_moves = move_checker(selected, opponent.pieces)
+      loop do
+        case player_input = get_player_input
+        when 'save'
+          save_game(to_yaml)
+        when 'back'
+          puts "cannot go 'back' at the start of your turn!"
+        else
+          tile = convert_to_array_cords(player_input)
+          if selected = self.active_player.pieces.find { |piece| piece.position == tile }
+            selected_piece = selected
+            break
+          else
+            puts "could not find piece. Please select another tile."
+          end
+        end
+      end
+
       
-      board.visualize_moves(legal_moves, selected.position)
-      puts "selected piece: #{selected.piece + reset}\nType \'back\' to go back or"
-      new_move = get_player_choice(legal_moves)
-      puts new_move
-      save_game(to_yaml) if new_move == 'save'
-      unless new_move == 'back' || new_move == 'save'
-        selected.update(new_move) 
-        break
+      legal_moves = move_checker(selected_piece, opponent.pieces)
+      board.visualize_moves(legal_moves, selected_piece.position)
+      puts "selected piece: #{selected_piece.piece + reset}\nType \'back\' to go back or"
+
+      #new_move = get_player_choice(legal_moves)
+      loop do
+        case new_input = get_player_input
+        when 'save'
+          save_game(to_yaml)
+        when 'back'
+          break
+        else 
+          new_tile = convert_to_array_cords(new_input)
+          if legal_moves.include?(new_tile)
+            selected_piece.update(new_tile)
+            break
+          else
+            puts "not valid. Choose a tile with a cyan dot."
+          end
+        end
       end
     end
   end
 
-  def player_input
+  def get_player_input
     loop do
        verified_input = verify_input(get_input)
        return verified_input if verified_input 
     end
   end
 
-  def select_piece(input)
+  def find_piece(input)
     until selected = self.active_player.pieces.find { |piece| piece.position == input }
       puts "no pieces found. please select another cell"
-      input = convert_to_array_cords(player_input)
+      input = convert_to_array_cords(get_player_input)
     end
     selected
   end
@@ -94,7 +121,8 @@ class Game
   end
 
   def verify_input(input)
-    if input.match?(/\b[a-h][1-8]\b|\b[0-8][a-h]\b/) 
+    commands = ['save', 'back']
+    if input.match?(/\b[a-h][1-8]\b|\b[0-8][a-h]\b/) || commands.include?(input)
       input = input[1] + input[0] if input.match?(/\b[0-8][a-h]\b/)
       input
     else
