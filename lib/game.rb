@@ -25,7 +25,6 @@ class Game
       player_turn
       self.active_player = active_player == player1 ? player2 : player1
     end
-    #save_game(to_yaml)
   end
 
   def player_turn
@@ -33,47 +32,15 @@ class Game
     loop do
       board.build_board
       puts "Player #{active_player.name}\'s turn"
-      selected_piece = nil
-
-      loop do
-        case player_input = get_player_input
-        when 'save'
-          save_game(to_yaml)
-        when 'back'
-          puts "cannot go 'back' at the start of your turn!"
-        else
-          tile = convert_to_array_cords(player_input)
-          if selected = self.active_player.pieces.find { |piece| piece.position == tile }
-            selected_piece = selected
-            break
-          else
-            puts "could not find piece. Please select another tile."
-          end
-        end
-      end
-
+      
+      selected_piece = find_piece
       
       legal_moves = move_checker(selected_piece, opponent.pieces)
       board.visualize_moves(legal_moves, selected_piece.position)
       puts "selected piece: #{selected_piece.piece + reset}\nType \'back\' to go back or"
 
-      #new_move = get_player_choice(legal_moves)
-      loop do
-        case new_input = get_player_input
-        when 'save'
-          save_game(to_yaml)
-        when 'back'
-          break
-        else 
-          new_tile = convert_to_array_cords(new_input)
-          if legal_moves.include?(new_tile)
-            selected_piece.update(new_tile)
-            break
-          else
-            puts "not valid. Choose a tile with a cyan dot."
-          end
-        end
-      end
+      break if next_move(legal_moves, selected_piece)
+
     end
   end
 
@@ -84,22 +51,40 @@ class Game
     end
   end
 
-  def find_piece(input)
-    until selected = self.active_player.pieces.find { |piece| piece.position == input }
-      puts "no pieces found. please select another cell"
-      input = convert_to_array_cords(get_player_input)
+  def find_piece
+    loop do
+      case player_input = get_player_input
+      when 'save'
+        save_game(to_yaml)
+      when 'back'
+        puts "cannot go 'back' at the start of your turn!"
+      else
+        tile = convert_to_array_cords(player_input)
+        if selected = self.active_player.pieces.find { |piece| piece.position == tile }
+          return selected
+        else
+          puts "could not find piece."
+        end
+      end
     end
-    selected
   end
 
-  def get_player_choice(movements)
-    more_options = ['back', 'save']
-    choices = movements + more_options
+  def next_move(movements, selected)
     loop do
-      input = get_input
-      input = convert_to_array_cords(verify_input(input)) unless more_options.include?(input) || verify_input(input).nil?
-      return input if choices.include?(input)
-      puts 'not valid. choose a tile with a cyan dot.'
+      case new_input = get_player_input
+      when 'save'
+        save_game(to_yaml)
+      when 'back'
+        return false
+      else 
+        new_tile = convert_to_array_cords(new_input)
+        if movements.include?(new_tile)
+          selected.update(new_tile)
+          return true
+        else
+          puts "not valid. Choose a tile with a cyan dot."
+        end
+      end
     end
   end
 
