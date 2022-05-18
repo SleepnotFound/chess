@@ -40,8 +40,10 @@ class Game
       
       board.visualize_moves(legal_moves, selected.position)
       puts "selected piece: #{selected.piece + reset}\nType \'back\' to go back or"
-      new_move = verify_legal_option(legal_moves)
-      unless new_move == 'back'
+      new_move = get_player_choice(legal_moves)
+      puts new_move
+      save_game(to_yaml) if new_move == 'save'
+      unless new_move == 'back' || new_move == 'save'
         selected.update(new_move) 
         break
       end
@@ -63,14 +65,15 @@ class Game
     selected
   end
 
-  def verify_legal_option(movements)
-    input = get_input
-    input = convert_to_array_cords(verify_input(input)) unless input == 'back' || verify_input(input) == nil
-    until movements.include?(input) || input == 'back'
+  def get_player_choice(movements)
+    more_options = ['back', 'save']
+    choices = movements + more_options
+    loop do
+      input = get_input
+      input = convert_to_array_cords(verify_input(input)) unless more_options.include?(input) || verify_input(input).nil?
+      return input if choices.include?(input)
       puts 'not valid. choose a tile with a cyan dot.'
-      input = verify_legal_option(movements)
     end
-    input
   end
 
   def set_game

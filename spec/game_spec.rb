@@ -87,13 +87,13 @@ describe Game do
     end
   end
 
-  describe '#verify_legal_option' do
+  describe '#get_player_choice' do
     subject(:game_options) { described_class.new }
     context 'when user inputs \'back\'' do
       it 'returns the string \'back\'' do
         allow(game_options).to receive(:get_input).and_return('back')
         movements = [[0,5],[1,5]]
-        result = game_options.verify_legal_option(movements)
+        result = game_options.get_player_choice(movements)
         expect(result).to eq('back')
       end
     end
@@ -101,7 +101,7 @@ describe Game do
       it 'returns the array element' do
         allow(game_options).to receive(:get_input).and_return('f7')
         movements = [[0,5],[1,5]]
-        result = game_options.verify_legal_option(movements)
+        result = game_options.get_player_choice(movements)
         expect(result).to eq([1,5])
       end
     end
@@ -111,7 +111,7 @@ describe Game do
         error_message = 'not valid. choose a tile with a cyan dot.'
         movements = [[0,5],[1,5]]
         expect(game_options).to receive(:puts).with(error_message).once
-        game_options.verify_legal_option(movements)
+        game_options.get_player_choice(movements)
       end
     end
   end
