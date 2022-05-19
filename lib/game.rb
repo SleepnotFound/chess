@@ -32,15 +32,13 @@ class Game
     loop do
       board.build_board
       puts "Player #{active_player.name}\'s turn"
-      
       selected_piece = find_piece
       
-      legal_moves = move_checker(selected_piece, opponent.pieces)
+      legal_moves = move_checker(selected_piece, active_player.pieces, opponent.pieces)
+      
       board.visualize_moves(legal_moves, selected_piece.position)
       puts "selected piece: #{selected_piece.piece + reset}\nType \'back\' to go back or"
-
       break if next_move(legal_moves, selected_piece)
-
     end
   end
 

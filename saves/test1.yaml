@@ -6,25 +6,25 @@
   - !ruby/object:King
     piece: "\e[97m♚"
     position:
-    - 3
+    - 2
     - 3
     type: king
     children:
+    - - 2
+      - 4
     - - 3
       - 4
-    - - 4
-      - 4
-    - - 4
+    - - 3
       - 3
-    - - 4
-      - 2
     - - 3
       - 2
     - - 2
       - 2
-    - - 2
+    - - 1
+      - 2
+    - - 1
       - 3
-    - - 2
+    - - 1
       - 4
   - !ruby/object:King
     piece: "\e[97m♚"
@@ -57,23 +57,23 @@
     piece: "\e[30m♚"
     position:
     - 2
-    - 6
+    - 5
     type: king
     children:
     - - 2
-      - 7
-    - - 3
-      - 7
+      - 6
     - - 3
       - 6
     - - 3
       - 5
+    - - 3
+      - 4
     - - 2
-      - 5
+      - 4
+    - - 1
+      - 4
     - - 1
       - 5
     - - 1
       - 6
-    - - 1
-      - 7
 :active_player: *1

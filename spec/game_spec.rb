@@ -73,52 +73,65 @@ describe Game do
   end
 
   describe '#find_piece' do
-    subject(:game_select) { described_class.new }
-    context 'when its active player\'s(white) turn to pick a piece on board' do
+    subject(:game_find) { described_class.new }
+    context 'when it\'s player white\'s turn ' do
       let(:king_piece) { double('King', type: 'king', position: [7,4]) }
       let(:active_player) { double('player', pieces: [king_piece]) }
-      context 'then chooses empty cell,cell with non-player piece ,then a cell with white piece' do
+      context 'then player enters \'back\' then \'save\'' do
         before do
-          second_try = "e8"
-          third_try = "e1"
-          game_select.instance_variable_set(:@active_player, active_player)
-          allow(game_select).to receive(:get_player_input).and_return(second_try, third_try)
+          game_find.instance_variable_set(:@active_player, active_player)
+          allow(game_find).to receive(:get_player_input).and_return('back', 'save', 'e1')
+          allow(game_find).to receive(:save_game)
         end
-        it 'outputs error message twice' do
-          first_try = "a8"
-          error_message = "no pieces found. please select another cell"
-          expect(game_select).to receive(:puts).with(error_message).twice
-          game_select.find_piece(first_try)
+        it 'outputs error message and calls method save_game' do
+          error_message = 'cannot go \'back\' at the start of your turn!'
+          expect(game_find).to receive(:puts).with(error_message)
+          expect(game_find).to receive(:save_game)
+          game_find.find_piece
+        end
+      end
+      context 'then player enters incorrect then correct location of piece(e1)' do
+        before do
+          incorrect_input = 'e6'
+          input = 'e1'
+          game_find.instance_variable_set(:@active_player, active_player)
+          allow(game_find).to receive(:get_player_input).and_return(incorrect_input, input)
+        end
+        it 'outputs error message then returns the players piece' do
+          expect(game_find).to receive(:puts).with('could not find piece.')
+          result = game_find.find_piece
+          expect(result).to eq(king_piece)
         end
       end
     end
   end
 
-  describe '#get_player_choice' do
-    subject(:game_options) { described_class.new }
-    context 'when user inputs \'back\'' do
-      it 'returns the string \'back\'' do
-        allow(game_options).to receive(:get_input).and_return('back')
-        movements = [[0,5],[1,5]]
-        result = game_options.get_player_choice(movements)
-        expect(result).to eq('back')
+  describe '#next_move' do
+    subject(:game_next_move) { described_class.new }
+    let(:king_piece) { double('King', type: 'king', position: [7,4]) }
+    context 'when user inputs \'save\' and then \'back\'' do
+      before do
+        allow(game_next_move).to receive(:get_player_input).and_return('save', 'back')
+        allow(game_next_move).to receive(:save_game)
+      end
+      it 'calls method save_game then returns false' do
+        movements = [[6,4],[6,5]]
+        expect(game_next_move).to receive(:save_game)
+        result = game_next_move.next_move(movements, king_piece)
+        expect(result).to be(false)
       end
     end
     context 'when user inputs a legal move from array movements' do
-      it 'returns the array element' do
-        allow(game_options).to receive(:get_input).and_return('f7')
-        movements = [[0,5],[1,5]]
-        result = game_options.get_player_choice(movements)
-        expect(result).to eq([1,5])
+      before do
+        input = 'e2'
+        allow(game_next_move).to receive(:get_player_input).and_return(input)
+        allow(king_piece).to receive(:update)
       end
-    end
-    context 'when user inputs an illegal move' do
-      it 'outputs error message once' do
-        allow(game_options).to receive(:get_input).and_return('f1', 'f8')
-        error_message = 'not valid. choose a tile with a cyan dot.'
-        movements = [[0,5],[1,5]]
-        expect(game_options).to receive(:puts).with(error_message).once
-        game_options.get_player_choice(movements)
+      it 'returns true and updates the array element' do
+        movements = [[6,4],[6,5]]
+        result = game_next_move.next_move(movements, king_piece)
+        expect(king_piece).to respond_to(:update).with(1).arguments
+        expect(result).to be(true)
       end
     end
   end
