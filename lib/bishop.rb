@@ -5,8 +5,6 @@ class Bishop
 
   attr_reader :position, :piece, :children, :type
 
-  MOVES = [[1,1], [1,-1], [-1,-1], [-1,1]].freeze
-
   def initialize(piece, position)
     @piece = piece
     @position = position
@@ -15,9 +13,13 @@ class Bishop
     make_children
   end
 
+  def moves
+    [[1,1], [1,-1], [-1,-1], [-1,1]]
+  end
+
   def make_children
     @children = []
-    Bishop::MOVES.each do |move|
+    moves.each do |move|
       y = move[0]
       x = move[1]
       loop do

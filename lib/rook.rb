@@ -5,8 +5,6 @@ class Rook
 
   attr_reader :position, :piece, :children, :type
 
-  MOVES = [[0,1], [1,0], [0,-1], [-1,0]].freeze
-
   def initialize(piece, position)
     @piece = piece
     @position = position
@@ -15,9 +13,13 @@ class Rook
     make_children
   end
 
+  def moves 
+    [[0,1], [1,0], [0,-1], [-1,0]]
+  end
+
   def make_children
     @children = []
-    Rook::MOVES.each do |move|
+    moves.each do |move|
       y = move[0]
       x = move[1]
       loop do

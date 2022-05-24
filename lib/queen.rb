@@ -5,8 +5,6 @@ class Queen
 
   attr_reader :position, :piece, :children, :type
 
-  MOVES = [[0,1], [1,1], [1,0], [1,-1], [0,-1], [-1,-1], [-1,0], [-1,1]].freeze
-
   def initialize(piece, position)
     @piece = piece
     @position = position
@@ -15,9 +13,13 @@ class Queen
     make_children
   end
 
+  def moves 
+    [[0,1], [1,1], [1,0], [1,-1], [0,-1], [-1,-1], [-1,0], [-1,1]]
+  end
+
   def make_children
     @children = []
-    Queen::MOVES.each do |move|
+    moves.each do |move|
       y = move[0]
       x = move[1]
       loop do
