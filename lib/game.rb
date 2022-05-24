@@ -3,6 +3,7 @@ require_relative 'player'
 require_relative 'pieces'
 require_relative 'load_save'
 require_relative 'rule_checker'
+require_relative 'queen'
 require 'yaml'
 
 class Game 
@@ -19,6 +20,8 @@ class Game
 
   def play
     set_game
+    #new_piece = Queen.new(white + queen, [7,0])
+    #player1.pieces << new_piece
     board.update_pieces(player1.pieces, player2.pieces)
     game_over = false
     until game_over
@@ -26,14 +29,14 @@ class Game
       self.active_player = active_player == player1 ? player2 : player1
     end
   end
-
+  
   def player_turn
     opponent = active_player == player1 ? player2 : player1
     loop do
       board.build_board
       puts "Player #{active_player.name}\'s turn"
       selected_piece = find_piece
-      
+
       legal_moves = move_checker(selected_piece, active_player.pieces, opponent.pieces)
       
       board.visualize_moves(legal_moves, selected_piece.position)
