@@ -10,7 +10,6 @@ class King
     @position = position
     @type = 'king'
     @children = []
-    make_children
   end
 
   def moves

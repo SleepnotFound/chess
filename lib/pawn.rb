@@ -13,7 +13,6 @@ class Pawn
     @on_first_move = true
     @passant = false
     @children = []
-    make_children
   end
 
   def moves

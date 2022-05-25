@@ -10,14 +10,13 @@ class Bishop
     @position = position
     @type = 'bishop'
     @children = []
-    make_children
   end
 
   def moves
     [[1,1], [1,-1], [-1,-1], [-1,1]]
   end
 
-  def make_children
+  def make_children(occupied_spaces)
     @children = []
     moves.each do |move|
       y = move[0]
@@ -28,6 +27,7 @@ class Bishop
         move[1] += x
         if child.all? { |n| n.between?(0, 7) }
           @children.push(child)
+          break if occupied_spaces.any? { |spaces| spaces == child }
         end
         break unless move.all? { |i| i.between?(-7,7) }
       end
@@ -36,6 +36,5 @@ class Bishop
 
   def update(position)
     @position = position
-    make_children
   end
 end

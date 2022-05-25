@@ -10,7 +10,6 @@ class Knight
     @position = position
     @type = 'knight'
     @children = []
-    make_children
   end
 
   def moves
