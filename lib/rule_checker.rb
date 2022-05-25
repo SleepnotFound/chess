@@ -2,7 +2,6 @@ require_relative 'pieces'
 include Pieces
 
 def move_checker(selected, player_set, opponent_set)
-  player_set.delete(selected)
   all_pieces = player_set + opponent_set
 
   case selected.type

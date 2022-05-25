@@ -69,11 +69,15 @@ class Board
     str += "\n"
   end
 
-  def visualize_moves(array, position)
+  def visualize_moves(legal_moves, position)
     original = board
+
     board[position[0]][position[1]].color = b_cyan
-    array.each do |t|
-      board[t[0]][t[1]].piece = cyan + circle
+    legal_moves[:legal_move].each do |t|
+      board[t[0]][t[1]].piece = cyan + circle unless legal_moves[:captures].include?(t)
+    end
+    legal_moves[:captures].each do |c|
+      board[c[0]][c[1]].color = b_red
     end
     display_board
     @board = original

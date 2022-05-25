@@ -34,11 +34,14 @@ class Game
     opponent = active_player == player1 ? player2 : player1
     loop do
       board.build_board
+      puts "white pieces:#{player1.pieces.length}"
+      puts "black pieces:#{player2.pieces.length}"
       puts "Player #{active_player.name}\'s turn"
       selected_piece = find_piece
 
       legal_moves = move_checker(selected_piece, active_player.pieces, opponent.pieces)
-      
+      puts legal_moves
+
       board.visualize_moves(legal_moves, selected_piece.position)
       puts "selected piece: #{selected_piece.piece + reset}\nType \'back\' to go back or"
       break if next_move(legal_moves, selected_piece)
@@ -79,7 +82,7 @@ class Game
         return false
       else 
         new_tile = convert_to_array_cords(new_input)
-        if movements.include?(new_tile)
+        if movements[:legal_move].include?(new_tile)
           selected.update(new_tile)
           return true
         else
