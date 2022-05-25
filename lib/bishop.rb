@@ -34,7 +34,8 @@ class Bishop
     end
   end
 
-  def update(position)
+  def update(position, occupied_spaces)
     @position = position
+    make_children(occupied_spaces)
   end
 end

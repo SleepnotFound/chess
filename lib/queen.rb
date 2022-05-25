@@ -3,8 +3,7 @@ require_relative 'pieces'
 class Queen 
   include Pieces
 
-  attr_accessor :children
-  attr_reader :position, :piece, :type
+  attr_reader :position, :piece, :type, :children
 
   def initialize(piece, position)
     @piece = piece
@@ -35,7 +34,8 @@ class Queen
     end
   end
 
-  def update(position)
+  def update(position, occupied_spaces)
     @position = position
+    make_children(occupied_spaces)
   end
 end

@@ -24,7 +24,8 @@ class Knight
     end
   end
 
-  def update(position)
+  def update(position, occupied_spaces)
+    # occupied_spaces is unused here as its not needed in class but to evoke #update
     @position = position
     make_children
   end
