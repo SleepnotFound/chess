@@ -74,6 +74,9 @@ class Game
   end
 
   def next_move(movements, selected)
+    all_pieces = player1.pieces + player2.pieces
+    occupied_tiles = []
+    all_pieces.each { |p| occupied_tiles << p.position }
     loop do
       case new_input = get_player_input
       when 'save'
@@ -83,7 +86,7 @@ class Game
       else 
         new_tile = convert_to_array_cords(new_input)
         if movements[:legal_move].include?(new_tile)
-          selected.update(new_tile)
+          selected.update(new_tile, occupied_tiles)
           return true
         else
           puts "not valid. Choose a tile with a cyan dot."

@@ -5,23 +5,29 @@ def move_checker(selected, player_set, opponent_set)
   all_pieces = player_set + opponent_set
 
   case selected.type
-   #Ensures king does not move into check 
   when 'king'
-    arr = []
+    illegal_moves = []
+    capture_points = []
     player_set.each do |piece|
       common = selected.children & [piece.position]
-      arr.push(common) unless common.empty?
+      illegal_moves.push(common) unless common.empty?
     end
     opponent_set.each do |piece|
       if piece.type == 'pawn'
         #push only pawns 2 diagonal capture moves
-      else
-        common = selected.children & piece.children
-        arr.push(common) unless common.empty?
+      elsif piece.type == 'queen'
+        back_track = backtracking(selected.position, piece.position)
+        illegal_moves.push([back_track])
       end
+      common = selected.children & piece.children
+      illegal_moves.push(common) unless common.empty?
+
+      capture = selected.children & [piece.position]
+      capture_points.push(capture) unless capture.empty?
     end
-    arr = arr.flatten(1).uniq unless arr.empty?
-    selected.children - arr 
+    illegal_moves = illegal_moves.flatten(1).uniq unless illegal_moves.empty?
+    capture_points = capture_points.flatten(1).uniq unless capture_points.empty?
+    {legal_moves: selected.children - illegal_moves, captures: capture_points}
   when 'queen'
     occupied_tiles = []
     all_pieces.each { |p| occupied_tiles << p.position }
@@ -37,10 +43,16 @@ def move_checker(selected, player_set, opponent_set)
         capture_points << piece.position
       end
     end
-    {legal_move: selected.children, captures: capture_points}
+    {legal_moves: selected.children, captures: capture_points}
   else
     puts "type of selected piece was not found"
   end
+end
+
+def backtracking(selected, piece)
+  a = selected[0] <=> piece[0]
+  b = selected[1] <=> piece[1]
+  [selected[0] + a, selected[1] + b]
 end
 
 
