@@ -3,7 +3,8 @@ require_relative 'pieces'
 class Rook 
   include Pieces
 
-  attr_reader :position, :piece, :children, :type
+  attr_accessor :position
+  attr_reader :piece, :type, :children
 
   def initialize(piece, position)
     @piece = piece
@@ -32,10 +33,5 @@ class Rook
         break unless move.all? { |i| i.between?(-7,7) }
       end
     end
-  end
-
-  def update(position, occupied_spaces)
-    @position = position
-    make_children(occupied_spaces)
   end
 end

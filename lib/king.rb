@@ -3,7 +3,8 @@ require_relative 'pieces'
 class King 
   include Pieces
 
-  attr_reader :position, :piece, :children, :type
+  attr_accessor :position
+  attr_reader :piece, :type, :children
 
   def initialize(piece, position)
     @piece = piece
@@ -24,11 +25,5 @@ class King
         @children.push(child)
       end
     end
-  end
-
-  def update(position, occupied_spaces)
-    # occupied_spaces is unused here as its not needed in class but to evoke #update
-    @position = position
-    make_children
   end
 end
