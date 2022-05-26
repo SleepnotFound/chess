@@ -4,6 +4,7 @@ require_relative 'pieces'
 require_relative 'load_save'
 require_relative 'rule_checker'
 require_relative 'queen'
+require_relative 'bishop'
 require 'yaml'
 
 class Game 
@@ -20,8 +21,8 @@ class Game
 
   def play
     set_game
-    #new_piece = Queen.new(white + queen, [7,0])
-    #player1.pieces << new_piece
+    #new_piece = Bishop.new(black + bishop, [0,5])
+    #player2.pieces << new_piece
     board.update_pieces(player1.pieces, player2.pieces)
     game_over = false
     until game_over
@@ -34,8 +35,6 @@ class Game
     opponent = active_player == player1 ? player2 : player1
     loop do
       board.build_board
-      puts "white pieces:#{player1.pieces.length}"
-      puts "black pieces:#{player2.pieces.length}"
       puts "Player #{active_player.name}\'s turn"
       selected_piece = find_piece
 
@@ -85,13 +84,24 @@ class Game
         return false
       else 
         new_tile = convert_to_array_cords(new_input)
-        if movements[:legal_move].include?(new_tile)
-          selected.update(new_tile, occupied_tiles)
+        if movements[:legal_moves].include?(new_tile)
+          occupied_tiles.delete(selected.position)
+          selected.position = new_tile
+          puts "all occupied spaces: #{occupied_tiles}"
+          update_all_pieces(all_pieces, occupied_tiles)
+          puts "new children for #{selected.type}: #{selected.children}"
           return true
         else
           puts "not valid. Choose a tile with a cyan dot."
         end
       end
+    end
+  end
+
+  def update_all_pieces(all_pieces, occupied_tiles)
+    needs_set = ['queen', 'rook', 'bishop']
+    all_pieces.each do |p|
+      needs_set.include?(p.type) ? p.make_children(occupied_tiles) : p.make_children
     end
   end
 

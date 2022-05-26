@@ -15,9 +15,12 @@ def move_checker(selected, player_set, opponent_set)
     opponent_set.each do |piece|
       if piece.type == 'pawn'
         #push only pawns 2 diagonal capture moves
-      elsif piece.type == 'queen'
-        back_track = backtracking(selected.position, piece.position)
-        illegal_moves.push([back_track])
+      elsif piece.type == 'queen' || piece.type == 'bishop'
+        if piece.children.include?(selected.position)
+          back_track = backtracking(selected.position, piece.position)
+          puts "backTrack by #{piece.type}: #{back_track}"
+          illegal_moves.push([back_track])
+        end
       end
       common = selected.children & piece.children
       illegal_moves.push(common) unless common.empty?
@@ -31,7 +34,23 @@ def move_checker(selected, player_set, opponent_set)
   when 'queen'
     occupied_tiles = []
     all_pieces.each { |p| occupied_tiles << p.position }
-    selected.make_children(occupied_tiles)
+    #selected.make_children(occupied_tiles)
+    
+    common = occupied_tiles & selected.children
+    capture_points = []
+    common.each do |tile| 
+      piece = all_pieces.find { |p| p.position == tile }
+      if player_set.include?(piece)
+        selected.children.delete(piece.position)
+      else
+        capture_points << piece.position
+      end
+    end
+    {legal_moves: selected.children, captures: capture_points}
+  when 'bishop'
+    occupied_tiles = []
+    all_pieces.each { |p| occupied_tiles << p.position }
+    #selected.make_children(occupied_tiles)
     
     common = occupied_tiles & selected.children
     capture_points = []
