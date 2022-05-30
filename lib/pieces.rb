@@ -6,6 +6,8 @@ module Pieces
   def cyan;         "\e[96m"  end
   def b_cyan;       "\e[106m" end
   def b_red;        "\e[41m"  end
+  def b_green;      "\e[42m"  end
+  def b_yellow;     "\e[43m"  end
   def tile_black;   "\e[100m" end
   def tile_white;   "\e[47m"  end
 

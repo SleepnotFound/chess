@@ -77,7 +77,7 @@ class Board
       board[t[0]][t[1]].piece = cyan + circle unless legal_moves[:captures].include?(t)
     end
     legal_moves[:captures].each do |c|
-      board[c[0]][c[1]].color = b_red
+      board[c[0]][c[1]].color = b_green
     end
     display_board
     @board = original
