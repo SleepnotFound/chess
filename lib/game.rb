@@ -73,9 +73,10 @@ class Game
   end
 
   def next_move(movements, selected)
+    #todo: array which contains all_piece.position reference to @white/black_pieces. mutable is prefered 
+    #possible error in line 90-91.array must update piece.position for the sake of all OTHER pieces to be update-able
     all_pieces = player1.pieces + player2.pieces
     occupied_tiles = []
-    all_pieces.each { |p| occupied_tiles << p.position }
     loop do
       case new_input = get_player_input
       when 'save'
@@ -85,8 +86,8 @@ class Game
       else 
         new_tile = convert_to_array_cords(new_input)
         if movements[:legal_moves].include?(new_tile)
-          occupied_tiles.delete(selected.position)
           selected.position = new_tile
+          all_pieces.each { |p| occupied_tiles << p.position }
           puts "all occupied spaces: #{occupied_tiles}"
           update_all_pieces(all_pieces, occupied_tiles)
           puts "new children for #{selected.type}: #{selected.children}"
@@ -99,6 +100,7 @@ class Game
   end
 
   def update_all_pieces(all_pieces, occupied_tiles)
+    # clean up later. i think method(*) would work in king/pawn/knight
     needs_set = ['queen', 'rook', 'bishop']
     all_pieces.each do |p|
       needs_set.include?(p.type) ? p.make_children(occupied_tiles) : p.make_children
