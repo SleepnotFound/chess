@@ -23,9 +23,18 @@ class Pawn
     @children = []
     moveset = moves
     moveset.insert(1, [-2,0]) if on_first_move
+    inverse_moves(moveset) if @piece.include?(black)
     moveset.each do |move|
       child = [position[0] + move[0], position[1] + move[1]]
       @children.push(child) if child.all? { |n| n.between?(0, 7) }
+    end
+  end
+
+  def inverse_moves(set)
+    set.each do |m|
+      m.map! do |i|
+        i *= -1
+      end
     end
   end
 end

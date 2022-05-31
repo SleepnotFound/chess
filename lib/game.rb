@@ -22,8 +22,7 @@ class Game
 
   def play
     set_game
-    #new_piece = Pawn.new(white + pawn, [6,4])
-    #player1.pieces << new_piece
+    add_piece
     board.update_pieces(player1.pieces, player2.pieces)
     game_over = false
     until game_over
@@ -106,6 +105,11 @@ class Game
     all_pieces.each do |p|
       ['queen', 'rook', 'bishop'].include?(p.type) ? p.make_children(occupied_tiles) : p.make_children
     end
+  end
+
+  def add_piece
+    new_piece = Pawn.new(black + pawn, [1,3])
+    player2.pieces << new_piece
   end
 
   def set_game
