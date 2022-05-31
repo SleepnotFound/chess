@@ -5,6 +5,7 @@ require_relative 'load_save'
 require_relative 'rule_checker'
 require_relative 'queen'
 require_relative 'bishop'
+require_relative 'pawn'
 require 'yaml'
 
 class Game 
@@ -21,8 +22,8 @@ class Game
 
   def play
     set_game
-    #new_piece = Bishop.new(black + bishop, [0,5])
-    #player2.pieces << new_piece
+    #new_piece = Pawn.new(white + pawn, [6,4])
+    #player1.pieces << new_piece
     board.update_pieces(player1.pieces, player2.pieces)
     game_over = false
     until game_over
@@ -39,7 +40,7 @@ class Game
       selected_piece = find_piece
 
       legal_moves = move_checker(selected_piece, active_player.pieces, opponent.pieces)
-      puts legal_moves
+      puts "legal moves:#{legal_moves} for position:#{selected_piece.position}"
 
       board.visualize_moves(legal_moves, selected_piece.position)
       puts "selected piece: #{selected_piece.piece + reset}\nType \'back\' to go back or"
@@ -73,10 +74,6 @@ class Game
   end
 
   def next_move(movements, selected)
-    #todo: array which contains all_piece.position reference to @white/black_pieces. mutable is prefered 
-    #possible error in line 90-91.array must update piece.position for the sake of all OTHER pieces to be update-able
-    all_pieces = player1.pieces + player2.pieces
-    occupied_tiles = []
     loop do
       case new_input = get_player_input
       when 'save'
@@ -87,23 +84,27 @@ class Game
         new_tile = convert_to_array_cords(new_input)
         if movements[:legal_moves].include?(new_tile)
           selected.position = new_tile
-          all_pieces.each { |p| occupied_tiles << p.position }
-          puts "all occupied spaces: #{occupied_tiles}"
-          update_all_pieces(all_pieces, occupied_tiles)
-          puts "new children for #{selected.type}: #{selected.children}"
+          update_all_pieces
+          selected.on_first_move = false if selected.type == 'pawn'
+          return true
+        elsif movements[:captures].include?(new_tile)
+          puts "capture option.todo..."
+          update_all_pieces
+          selected.on_first_move = false if selected.type == 'pawn'
           return true
         else
-          puts "not valid. Choose a tile with a cyan dot."
+          puts "invalid. move into a cyan dot or capture any green tile"
         end
       end
     end
   end
 
-  def update_all_pieces(all_pieces, occupied_tiles)
-    # clean up later. i think method(*) would work in king/pawn/knight
-    needs_set = ['queen', 'rook', 'bishop']
+  def update_all_pieces
+    all_pieces = player1.pieces + player2.pieces
+    occupied_tiles = []
+    all_pieces.each { |p| occupied_tiles << p.position }
     all_pieces.each do |p|
-      needs_set.include?(p.type) ? p.make_children(occupied_tiles) : p.make_children
+      ['queen', 'rook', 'bishop'].include?(p.type) ? p.make_children(occupied_tiles) : p.make_children
     end
   end
 

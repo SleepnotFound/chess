@@ -3,8 +3,8 @@ require_relative 'pieces'
 class Pawn 
   include Pieces
 
-  attr_accessor :position, :passant
-  attr_reader :piece, :type, :children, :on_first_move
+  attr_accessor :position, :passant, :on_first_move
+  attr_reader :piece, :type, :children
 
   def initialize(piece, position)
     @piece = piece
@@ -22,7 +22,7 @@ class Pawn
   def make_children
     @children = []
     moveset = moves
-    moveset << [-2,0] if on_first_move
+    moveset.insert(1, [-2,0]) if on_first_move
     moveset.each do |move|
       child = [position[0] + move[0], position[1] + move[1]]
       @children.push(child) if child.all? { |n| n.between?(0, 7) }

@@ -3,55 +3,50 @@ include Pieces
 
 def move_checker(selected, player_set, opponent_set)
   all_pieces = player_set + opponent_set
+  illegal_moves = []
+  capture_tiles = []
 
   case selected.type
-  when 'king'
-    illegal_moves = []
-    capture_tiles = []
-    player_set.each do |piece|
-      common_tiles = selected.children & [piece.position]
-      illegal_moves.push(common_tiles) unless common_tiles.empty?
+  when 'pawn'
+    moves = selected.on_first_move ? selected.children.take(2) : selected.children.take(1)
+    captures = selected.on_first_move ? selected.children.drop(2) : selected.children.drop(1)
+    all_pieces.each do |piece|
+      common_tiles = moves & [piece.position]
+      illegal_moves += [moves[1]] if common_tiles.any? && selected.on_first_move
+      illegal_moves += common_tiles
+      capture_tiles += captures & [piece.position]
     end
+    {legal_moves: moves - illegal_moves.uniq, captures: capture_tiles.uniq}
+  when 'king'
+    all_pieces.each { |p| illegal_moves += selected.children & [p.position] }
     opponent_set.each do |piece|
-      common = selected.children & piece.children
-      illegal_moves.push(common) unless common.empty?
-      capture = selected.children & [piece.position]
-      capture_tiles.push(capture) unless capture.empty?
+      illegal_moves += selected.children & piece.children
+      capture_tiles += selected.children & [piece.position]
       case piece.type
       when 'pawn'
-        puts "pawn forward move: #{piece.children[0]}"
-        illegal_moves.delete(piece.children[0])
+        moves = piece.on_first_move ? piece.children.take(2) : piece.children.take(1)
+        moves.each do |m|
+          i = illegal_moves.index(m)
+          illegal_moves.delete_at(i) if i
+        end
       when 'queen', 'bishop', 'rook'
         if piece.children.include?(selected.position)
           retreat_tile = backtracking(selected.position, piece.position)
-          illegal_moves.push([retreat_tile])
+          illegal_moves += [retreat_tile]
         end
       end
     end
-    illegal_moves = illegal_moves.flatten(1).uniq unless illegal_moves.empty?
-    capture_tiles = capture_tiles.flatten(1).uniq unless capture_tiles.empty?
-    {legal_moves: selected.children - illegal_moves, captures: capture_tiles - illegal_moves}
-  when 'queen', 'bishop', 'rook'
-    occupied_tiles = []
-    capture_tiles = []
-    all_pieces.each { |p| occupied_tiles << p.position }
-    contact_tiles = occupied_tiles & selected.children
-    contact_tiles.each do |tile| 
-      piece = all_pieces.find { |p| p.position == tile }
-      if player_set.include?(piece)
-        selected.children.delete(piece.position)
-      else
-        capture_tiles << piece.position
-      end
+    {legal_moves: selected.children - illegal_moves.uniq, captures: capture_tiles}
+  when 'queen', 'bishop', 'rook', 'knight'
+    all_pieces.each do |piece|
+      illegal_moves += selected.children & [piece.position]
+      capture_tiles += selected.children & [piece.position] if opponent_set.include?(piece)
     end
-    {legal_moves: selected.children, captures: capture_tiles}
-  when 'knight'
-    # knight logic here
-  else
-    puts "type of selected piece was not found"
+    {legal_moves: selected.children - illegal_moves.uniq, captures: capture_tiles}
   end
 end
 
+# ensures king does not move back into check
 def backtracking(selected, piece)
   a = selected[0] <=> piece[0]
   b = selected[1] <=> piece[1]
