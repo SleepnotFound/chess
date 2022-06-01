@@ -60,17 +60,15 @@
   - !ruby/object:Pawn
     piece: "\e[97m♟"
     position:
-    - 6
+    - 4
     - 0
     type: pawn
-    on_first_move: true
-    passant: false
+    on_first_move: false
+    passant: true
     children:
-    - - 5
+    - - 3
       - 0
-    - - 4
-      - 0
-    - - 5
+    - - 3
       - 1
   - !ruby/object:Pawn
     piece: "\e[97m♟"
@@ -109,26 +107,26 @@
   - !ruby/object:King
     piece: "\e[30m♚"
     position:
-    - 5
     - 4
+    - 5
     type: king
     children:
+    - - 4
+      - 6
+    - - 5
+      - 6
     - - 5
       - 5
-    - - 6
-      - 5
-    - - 6
-      - 4
-    - - 6
-      - 3
     - - 5
-      - 3
-    - - 4
-      - 3
-    - - 4
       - 4
     - - 4
+      - 4
+    - - 3
+      - 4
+    - - 3
       - 5
+    - - 3
+      - 6
   - !ruby/object:Queen
     piece: "\e[30m♛"
     position:
@@ -152,16 +150,16 @@
       - 5
     - - 5
       - 4
+    - - 5
+      - 3
+    - - 5
+      - 2
+    - - 5
+      - 1
+    - - 5
+      - 0
     - - 4
       - 5
-    - - 3
-      - 4
-    - - 2
-      - 3
-    - - 1
-      - 2
-    - - 0
-      - 1
     - - 4
       - 6
     - - 3
@@ -193,7 +191,28 @@
     type: pawn
     on_first_move: true
     passant: false
-    children: []
+    children:
+    - - 2
+      - 0
+    - - 3
+      - 0
+    - - 2
+      - 1
+  - !ruby/object:Pawn
+    piece: "\e[30m♟"
+    position:
+    - 4
+    - 3
+    type: pawn
+    on_first_move: false
+    passant: true
+    children:
+    - - 5
+      - 3
+    - - 5
+      - 4
+    - - 5
+      - 2
   - !ruby/object:Pawn
     piece: "\e[30m♟"
     position:
@@ -202,5 +221,13 @@
     type: pawn
     on_first_move: true
     passant: false
-    children: []
+    children:
+    - - 2
+      - 3
+    - - 3
+      - 3
+    - - 2
+      - 4
+    - - 2
+      - 2
 :active_player: *1

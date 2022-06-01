@@ -22,7 +22,7 @@ class Game
 
   def play
     set_game
-    add_piece
+    #add_piece
     board.update_pieces(player1.pieces, player2.pieces)
     game_over = false
     until game_over
@@ -83,12 +83,15 @@ class Game
         new_tile = convert_to_array_cords(new_input)
         if movements[:legal_moves].include?(new_tile)
           selected.position = new_tile
-          update_all_pieces
-          selected.on_first_move = false if selected.type == 'pawn'
+          update_all_pieces(true)
+          if selected.type == 'pawn'
+            selected.on_first_move = false
+            selected.passant = true if movements[:legal_moves][1] == new_tile
+          end
           return true
         elsif movements[:captures].include?(new_tile)
           puts "capture option.todo..."
-          update_all_pieces
+          update_all_pieces(true)
           selected.on_first_move = false if selected.type == 'pawn'
           return true
         else
@@ -98,12 +101,15 @@ class Game
     end
   end
 
-  def update_all_pieces
+  def update_all_pieces(pawn_reset = false)
     all_pieces = player1.pieces + player2.pieces
     occupied_tiles = []
     all_pieces.each { |p| occupied_tiles << p.position }
     all_pieces.each do |p|
       ['queen', 'rook', 'bishop'].include?(p.type) ? p.make_children(occupied_tiles) : p.make_children
+      if p.type == 'pawn'
+        p.passant = false if pawn_reset
+      end
     end
   end
 
