@@ -22,6 +22,7 @@ def move_checker(selected, player_set, opponent_set)
     all_pieces.each { |p| illegal_moves += selected.children & [p.position] }
     opponent_set.each do |piece|
       illegal_moves += selected.children & piece.children
+      # next line should take into account backtracking. maybe move after line 34-38? bug occurs here.
       capture_tiles += selected.children & [piece.position]
       case piece.type
       when 'pawn'
@@ -60,13 +61,23 @@ def en_passant(selected, piece)
   right = [selected.position[0], selected.position[1] + 1]
   overlap = [left, right] & [piece.position]
   if overlap.any? 
-    if piece.passant
-      y = piece.piece.include?(black) ? piece.position[0] - 1 : piece.position[0] + 1
-      [[y, piece.position[1]]]
-    else
-      []
-    end
+    return overlap if piece.passant
+    []
   else 
     []
   end
+end
+
+# capture a piece with pawn en passant logic
+def capturing(selected, new_tile)
+  opponent = active_player == player1 ? player2 : player1
+  piece = opponent.pieces.find { |piece| piece.position == new_tile }
+  opponent.pieces -= [piece]
+  if selected.type == 'pawn' && piece.type == 'pawn' && piece.passant == true 
+    y = piece.piece.include?(black) ? piece.position[0] - 1 : piece.position[0] + 1
+    selected.position = [y, piece.position[1]]
+  else
+    selected.position = new_tile
+  end
+  board.update_pieces(player1.pieces, player2.pieces)
 end

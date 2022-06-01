@@ -90,7 +90,7 @@ class Game
           end
           return true
         elsif movements[:captures].include?(new_tile)
-          puts "capture option.todo..."
+          capturing(selected, new_tile)
           update_all_pieces(true)
           selected.on_first_move = false if selected.type == 'pawn'
           return true
