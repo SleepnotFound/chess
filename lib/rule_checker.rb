@@ -41,6 +41,7 @@ def move_checker(selected, player_set, opponent_set)
     end
     capture_tiles -= retreat_tiles
     illegal_moves += retreat_tiles
+    illegal_moves -= capture_tiles
     {legal_moves: selected.children - illegal_moves.uniq - capture_tiles, captures: capture_tiles}
   when 'queen', 'bishop', 'rook', 'knight'
     all_pieces.each do |piece|
