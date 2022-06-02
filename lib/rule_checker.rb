@@ -19,11 +19,10 @@ def move_checker(selected, player_set, opponent_set)
     end
     {legal_moves: moves - illegal_moves.uniq, captures: capture_tiles.uniq}
   when 'king'
-    all_pieces.each { |p| illegal_moves += selected.children & [p.position] }
-    retreat_tile = []
+    player_set.each { |p| illegal_moves += selected.children & [p.position] }
+    retreat_tiles = []
     opponent_set.each do |piece|
       illegal_moves += selected.children & piece.children
-      capture_tiles += selected.children & [piece.position]
       case piece.type
       when 'pawn'
         moves = piece.on_first_move ? piece.children.take(2) : piece.children.take(1)
@@ -33,14 +32,16 @@ def move_checker(selected, player_set, opponent_set)
         end
       when 'queen', 'bishop', 'rook'
         if piece.children.include?(selected.position)
-          retreat_tile << backtracking(selected.position, piece.position)
+          retreat_tiles << backtracking(selected.position, piece.position)
         end
       end
     end
-    capture_tiles -= retreat_tile
-    illegal_moves += retreat_tile
-    p illegal_moves
-    {legal_moves: selected.children - illegal_moves.uniq, captures: capture_tiles}
+    opponent_set.each do |piece|
+      capture_tiles += selected.children & [piece.position] unless illegal_moves.include?(piece.position)
+    end
+    capture_tiles -= retreat_tiles
+    illegal_moves += retreat_tiles
+    {legal_moves: selected.children - illegal_moves.uniq - capture_tiles, captures: capture_tiles}
   when 'queen', 'bishop', 'rook', 'knight'
     all_pieces.each do |piece|
       illegal_moves += selected.children & [piece.position]
