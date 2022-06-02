@@ -20,9 +20,9 @@ def move_checker(selected, player_set, opponent_set)
     {legal_moves: moves - illegal_moves.uniq, captures: capture_tiles.uniq}
   when 'king'
     all_pieces.each { |p| illegal_moves += selected.children & [p.position] }
+    retreat_tile = []
     opponent_set.each do |piece|
       illegal_moves += selected.children & piece.children
-      # next line should take into account backtracking. maybe move after line 34-38? bug occurs here.
       capture_tiles += selected.children & [piece.position]
       case piece.type
       when 'pawn'
@@ -33,11 +33,13 @@ def move_checker(selected, player_set, opponent_set)
         end
       when 'queen', 'bishop', 'rook'
         if piece.children.include?(selected.position)
-          retreat_tile = backtracking(selected.position, piece.position)
-          illegal_moves += [retreat_tile]
+          retreat_tile << backtracking(selected.position, piece.position)
         end
       end
     end
+    capture_tiles -= retreat_tile
+    illegal_moves += retreat_tile
+    p illegal_moves
     {legal_moves: selected.children - illegal_moves.uniq, captures: capture_tiles}
   when 'queen', 'bishop', 'rook', 'knight'
     all_pieces.each do |piece|
@@ -68,7 +70,7 @@ def en_passant(selected, piece)
   end
 end
 
-# capture a piece with pawn en passant logic
+# capture a piece,including pawn en passant logic
 def capturing(selected, new_tile)
   opponent = active_player == player1 ? player2 : player1
   piece = opponent.pieces.find { |piece| piece.position == new_tile }
@@ -80,4 +82,19 @@ def capturing(selected, new_tile)
     selected.position = new_tile
   end
   board.update_pieces(player1.pieces, player2.pieces)
+end
+
+def in_check?
+  opponent = active_player == player1 ? player2 : player1
+  king = active_player.pieces.find { |p| p.type == 'king'}
+  common = []
+  opponent.pieces.each do |p|
+    common += p.children & [king.position]
+  end
+  puts "king location:#{king.position}. common:#{common}"
+  if common.any?
+    move_set = move_checker(king, active_player.pieces, opponent.pieces)
+    puts "moveset: #{move_set}"
+  end
+  return true if common.any?
 end

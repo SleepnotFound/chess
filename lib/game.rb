@@ -26,22 +26,25 @@ class Game
     board.update_pieces(player1.pieces, player2.pieces)
     game_over = false
     until game_over
-      player_turn
+      #check for check/mate
+      check = in_check?
+      player_turn(check)
       self.active_player = active_player == player1 ? player2 : player1
     end
   end
   
-  def player_turn
+  def player_turn(check = false)
     opponent = active_player == player1 ? player2 : player1
     loop do
       board.build_board
       puts "Player #{active_player.name}\'s turn"
-      selected_piece = find_piece
+      selected_piece = check ? active_player.pieces.find { |p| p.type == 'king'} : find_piece
 
       legal_moves = move_checker(selected_piece, active_player.pieces, opponent.pieces)
       puts "legal moves:#{legal_moves} for position:#{selected_piece.position}"
 
       board.visualize_moves(legal_moves, selected_piece.position)
+      puts "You are in check!" if check
       puts "selected piece: #{selected_piece.piece + reset}\nType \'back\' to go back or"
       break if next_move(legal_moves, selected_piece)
     end
@@ -87,6 +90,8 @@ class Game
           if selected.type == 'pawn'
             selected.on_first_move = false
             selected.passant = true if movements[:legal_moves][1] == new_tile
+          elsif selected.type == 'king' || selected.type == 'rook' 
+            selected.on_first_move == false
           end
           return true
         elsif movements[:captures].include?(new_tile)

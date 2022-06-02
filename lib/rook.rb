@@ -3,13 +3,14 @@ require_relative 'pieces'
 class Rook 
   include Pieces
 
-  attr_accessor :position
+  attr_accessor :position, :on_first_move
   attr_reader :piece, :type, :children
 
   def initialize(piece, position)
     @piece = piece
     @position = position
     @type = 'rook'
+    @on_first_move = true
     @children = []
   end
 
