@@ -3,52 +3,44 @@ include Pieces
 
 def move_checker(selected, player_set, opponent_set)
   all_pieces = player_set + opponent_set
-  illegal_moves = []
+  illegal_tiles = []
   capture_tiles = []
 
   case selected.type
   when 'pawn'
-    moves = selected.on_first_move ? selected.children.take(2) : selected.children.take(1)
-    captures = selected.on_first_move ? selected.children.drop(2) : selected.children.drop(1)
+    moves = selected.m_children
+    captures = selected.c_children
     all_pieces.each do |piece|
       common_tiles = moves & [piece.position]
-      illegal_moves += [moves[1]] if common_tiles.any? && selected.on_first_move
-      illegal_moves += common_tiles
-      capture_tiles += captures & [piece.position]
-      capture_tiles += en_passant(selected,piece) if piece.type == 'pawn'
+      illegal_tiles += [moves[1]] if common_tiles.any? && selected.on_first_move
+      illegal_tiles += common_tiles
+      capture_tiles += captures & [piece.position] if opponent_set.include?(piece)
+      capture_tiles += en_passant(selected,piece) if piece.type == 'pawn' && opponent_set.include?(piece)
     end
-    {legal_moves: moves - illegal_moves.uniq, captures: capture_tiles.uniq}
+    {legal_moves: moves - illegal_tiles.uniq, captures: capture_tiles.uniq}
   when 'king'
-    player_set.each { |p| illegal_moves += selected.children & [p.position] }
-    retreat_tiles = []
+    player_set.each { |p| illegal_tiles += selected.children & [p.position] }
     opponent_set.each do |piece|
-      illegal_moves += selected.children & piece.children
       case piece.type
       when 'pawn'
-        moves = piece.on_first_move ? piece.children.take(2) : piece.children.take(1)
-        moves.each do |m|
-          i = illegal_moves.index(m)
-          illegal_moves.delete_at(i) if i
-        end
+        illegal_tiles += selected.children & piece.c_children
       when 'queen', 'bishop', 'rook'
-        if piece.children.include?(selected.position)
-          retreat_tiles << backtracking(selected.position, piece.position)
-        end
+        illegal_tiles += backtracking(selected.position, piece.position) if piece.children.include?(selected.position)
+        illegal_tiles += selected.children & piece.children
+      else
+        illegal_tiles += selected.children & piece.children
       end
     end
     opponent_set.each do |piece|
-      capture_tiles += selected.children & [piece.position] unless illegal_moves.include?(piece.position)
+      capture_tiles += selected.children & [piece.position] unless illegal_tiles.include?(piece.position)
     end
-    capture_tiles -= retreat_tiles
-    illegal_moves += retreat_tiles
-    illegal_moves -= capture_tiles
-    {legal_moves: selected.children - illegal_moves.uniq - capture_tiles, captures: capture_tiles}
+    {legal_moves: selected.children - illegal_tiles.uniq - capture_tiles, captures: capture_tiles}
   when 'queen', 'bishop', 'rook', 'knight'
     all_pieces.each do |piece|
-      illegal_moves += selected.children & [piece.position]
+      illegal_tiles += selected.children & [piece.position]
       capture_tiles += selected.children & [piece.position] if opponent_set.include?(piece)
     end
-    {legal_moves: selected.children - illegal_moves.uniq, captures: capture_tiles}
+    {legal_moves: selected.children - illegal_tiles.uniq, captures: capture_tiles}
   end
 end
 
@@ -88,15 +80,14 @@ end
 
 def in_check?
   opponent = active_player == player1 ? player2 : player1
+  puts "active: #{active_player.name}, opponent: #{opponent.name}"
   king = active_player.pieces.find { |p| p.type == 'king'}
+  puts "king at #{king.position}"
   common = []
+  piece = nil
   opponent.pieces.each do |p|
     common += p.children & [king.position]
   end
-  puts "king location:#{king.position}. common:#{common}"
-  if common.any?
-    move_set = move_checker(king, active_player.pieces, opponent.pieces)
-    puts "moveset: #{move_set}"
-  end
+  p common
   return true if common.any?
 end

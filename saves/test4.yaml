@@ -70,6 +70,12 @@
       - 0
     - - 3
       - 1
+    c_children:
+    - - 3
+      - 1
+    m_children:
+    - - 3
+      - 0
   - !ruby/object:Pawn
     piece: "\e[97m♟"
     position:
@@ -83,6 +89,12 @@
       - 7
     - - 4
       - 6
+    c_children:
+    - - 4
+      - 6
+    m_children:
+    - - 4
+      - 7
   - !ruby/object:Pawn
     piece: "\e[97m♟"
     position:
@@ -100,6 +112,16 @@
       - 3
     - - 5
       - 5
+    c_children:
+    - - 5
+      - 3
+    - - 5
+      - 5
+    m_children:
+    - - 5
+      - 4
+    - - 4
+      - 4
 :player2: !ruby/object:Player
   name: black
   color: "\e[30m"
@@ -198,6 +220,14 @@
       - 0
     - - 2
       - 1
+    c_children:
+    - - 2
+      - 1
+    m_children:
+    - - 2
+      - 0
+    - - 3
+      - 0
   - !ruby/object:Pawn
     piece: "\e[30m♟"
     position:
@@ -213,6 +243,14 @@
       - 4
     - - 5
       - 2
+    c_children:
+    - - 5
+      - 4
+    - - 5
+      - 2
+    m_children:
+    - - 5
+      - 3
   - !ruby/object:Pawn
     piece: "\e[30m♟"
     position:
@@ -230,4 +268,14 @@
       - 4
     - - 2
       - 2
+    c_children:
+    - - 2
+      - 4
+    - - 2
+      - 2
+    m_children:
+    - - 2
+      - 3
+    - - 3
+      - 3
 :active_player: *1

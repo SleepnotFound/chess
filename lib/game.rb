@@ -27,8 +27,8 @@ class Game
     game_over = false
     until game_over
       #check for check/mate
-      check = in_check?
-      player_turn(check)
+      #check = in_check?
+      player_turn(check = false)
       self.active_player = active_player == player1 ? player2 : player1
     end
   end
@@ -38,15 +38,15 @@ class Game
     loop do
       board.build_board
       puts "Player #{active_player.name}\'s turn"
-      selected_piece = check ? active_player.pieces.find { |p| p.type == 'king'} : find_piece
+      puts "\e[1mYou are in check!\e[0m" if check
+      selected = select_piece
 
-      legal_moves = move_checker(selected_piece, active_player.pieces, opponent.pieces)
-      puts "legal moves:#{legal_moves} for position:#{selected_piece.position}"
+      selected_moveset = move_checker(selected, active_player.pieces, opponent.pieces)
+      puts "legal moves:#{selected_moveset} for position:#{selected.position}"
 
-      board.visualize_moves(legal_moves, selected_piece.position)
-      puts "You are in check!" if check
-      puts "selected piece: #{selected_piece.piece + reset}\nType \'back\' to go back or"
-      break if next_move(legal_moves, selected_piece)
+      board.visualize_moves(selected_moveset, selected.position)
+      puts "selected piece: #{selected.piece + reset}\nType \'back\' to go back or"
+      break if next_move(selected_moveset, selected)
     end
   end
 
@@ -57,7 +57,7 @@ class Game
     end
   end
 
-  def find_piece
+  def select_piece
     loop do
       case player_input = get_player_input
       when 'save'
@@ -84,19 +84,19 @@ class Game
         return false
       else 
         new_tile = convert_to_array_cords(new_input)
-        if movements[:legal_moves].include?(new_tile)
+        if movements[:selected_moveset].include?(new_tile)
           selected.position = new_tile
-          update_all_pieces(true)
+          update_all_pieces
           if selected.type == 'pawn'
             selected.on_first_move = false
-            selected.passant = true if movements[:legal_moves][1] == new_tile
+            selected.passant = true if movements[:selected_moveset][1] == new_tile
           elsif selected.type == 'king' || selected.type == 'rook' 
             selected.on_first_move == false
           end
           return true
         elsif movements[:captures].include?(new_tile)
           capturing(selected, new_tile)
-          update_all_pieces(true)
+          update_all_pieces
           selected.on_first_move = false if selected.type == 'pawn'
           return true
         else
@@ -106,15 +106,13 @@ class Game
     end
   end
 
-  def update_all_pieces(pawn_reset = false)
+  def update_all_pieces
     all_pieces = player1.pieces + player2.pieces
     occupied_tiles = []
     all_pieces.each { |p| occupied_tiles << p.position }
     all_pieces.each do |p|
       ['queen', 'rook', 'bishop'].include?(p.type) ? p.make_children(occupied_tiles) : p.make_children
-      if p.type == 'pawn'
-        p.passant = false if pawn_reset
-      end
+      p.passant = false if p.type == 'pawn'
     end
   end
 
@@ -124,7 +122,8 @@ class Game
   end
 
   def set_game
-    case mode = verify_mode
+    case mode = '1'
+    #case mode = verify_mode
     when '0'
       #display instructions/controls then jump to new game
     when '1'
