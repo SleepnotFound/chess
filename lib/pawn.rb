@@ -4,7 +4,7 @@ class Pawn
   include Pieces
 
   attr_accessor :position, :passant, :on_first_move
-  attr_reader :piece, :type, :children
+  attr_reader :piece, :type, :c_children, :m_children
 
   def initialize(piece, position)
     @piece = piece
@@ -12,21 +12,32 @@ class Pawn
     @type = 'pawn'
     @on_first_move = true
     @passant = false
-    @children = []
+    @c_children = []
+    @m_children = []
   end
 
   def moves
-    [[-1,0], [-1,-1], [-1,1]]
+    if on_first_move
+      [[-1,0], [-2,0], [-1,-1], [-1,1]]
+    else
+      [[-1,0], [-1,-1], [-1,1]]
+    end
   end
 
   def make_children
-    @children = []
+    @c_children = []
+    @m_children = []
     moveset = moves
-    moveset.insert(1, [-2,0]) if on_first_move
     inverse_moves(moveset) if @piece.include?(black)
-    moveset.each do |move|
+    moveset.each_with_index do |move, i|
       child = [position[0] + move[0], position[1] + move[1]]
-      @children.push(child) if child.all? { |n| n.between?(0, 7) }
+      if on_first_move && child.all? { |n| n.between?(0,7) }
+        @m_children.push(child) if [0,1].include?(i) 
+        @c_children.push(child) if [2,3].include?(i) 
+      elsif child.all? { |n| n.between?(0,7) } 
+        @m_children.push(child) if i == 0
+        @c_children.push(child) if i != 0
+      end
     end
   end
 
