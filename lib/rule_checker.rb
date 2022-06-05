@@ -80,14 +80,18 @@ end
 
 def in_check?
   opponent = active_player == player1 ? player2 : player1
-  puts "active: #{active_player.name}, opponent: #{opponent.name}"
   king = active_player.pieces.find { |p| p.type == 'king'}
-  puts "king at #{king.position}"
-  common = []
-  piece = nil
   opponent.pieces.each do |p|
-    common += p.children & [king.position]
+    if p.type == 'pawn'
+      return true if (p.c_children & [king.position]).any?
+    else
+      return true if (p.children & [king.position]).any?
+    end
   end
-  p common
-  return true if common.any?
+  false
+end
+
+def find_forced_moveset
+  puts "find forced moveset called.returning empty hash"
+  Hash.new
 end

@@ -27,13 +27,26 @@ class Game
     game_over = false
     until game_over
       #check for check/mate
-      #check = in_check?
-      player_turn(check = false)
+      check = in_check?
+      if check
+        #calculate moving out of check/blocking/capturing for king
+        forced_moveset = find_forced_moveset
+        #if forced_moveset is empty then checkmate
+        if forced_moveset.empty?
+          game_over = true
+        else
+          #use forced_set to continue game.player must use forced_moveset
+          player_turn(true, forced_moveset)
+        end
+      else
+        player_turn
+      end
       self.active_player = active_player == player1 ? player2 : player1
     end
+    puts "end of game"
   end
   
-  def player_turn(check = false)
+  def player_turn(check = false, forced_moveset = nil)
     opponent = active_player == player1 ? player2 : player1
     loop do
       board.build_board
@@ -84,12 +97,12 @@ class Game
         return false
       else 
         new_tile = convert_to_array_cords(new_input)
-        if movements[:selected_moveset].include?(new_tile)
+        if movements[:legal_moves].include?(new_tile)
           selected.position = new_tile
           update_all_pieces
           if selected.type == 'pawn'
             selected.on_first_move = false
-            selected.passant = true if movements[:selected_moveset][1] == new_tile
+            selected.passant = true if movements[:legal_moves][1] == new_tile
           elsif selected.type == 'king' || selected.type == 'rook' 
             selected.on_first_move == false
           end
