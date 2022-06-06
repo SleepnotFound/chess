@@ -27,15 +27,18 @@ class Game
     game_over = false
     until game_over
       #check for check/mate
-      check = in_check?
-      if check
+      threats = in_check?
+      if threats
         #calculate moving out of check/blocking/capturing for king
-        forced_moveset = find_forced_moveset
-        #if forced_moveset is empty then checkmate
+        forced_moveset = find_forced_moveset(threats)
         if forced_moveset.empty?
-          game_over = true
+          #if forced_moveset is empty then checkmate
+          puts "checkmate!"
+          #game_over = true
         else
           #use forced_set to continue game.player must use forced_moveset
+          puts "not checkmate. the use of forced_moveset is as followed:"
+          forced_moveset.each { |fm| puts "#{fm[0].type}: #{fm[1]}" }
           player_turn(true, forced_moveset)
         end
       else
@@ -47,7 +50,6 @@ class Game
   end
   
   def player_turn(check = false, forced_moveset = nil)
-    opponent = active_player == player1 ? player2 : player1
     loop do
       board.build_board
       puts "Player #{active_player.name}\'s turn"
@@ -68,6 +70,10 @@ class Game
        verified_input = verify_input(get_input)
        return verified_input if verified_input 
     end
+  end
+
+  def opponent
+    active_player == player1 ? player2 : player1
   end
 
   def select_piece

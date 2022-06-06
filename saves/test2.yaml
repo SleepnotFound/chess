@@ -1,31 +1,8 @@
 ---
-:player1: &1 !ruby/object:Player
+:player1: !ruby/object:Player
   name: white
   color: "\e[97m"
   pieces:
-  - !ruby/object:King
-    piece: "\e[97m♚"
-    position:
-    - 4
-    - 4
-    type: king
-    children:
-    - - 4
-      - 5
-    - - 5
-      - 5
-    - - 5
-      - 4
-    - - 5
-      - 3
-    - - 4
-      - 3
-    - - 3
-      - 3
-    - - 3
-      - 4
-    - - 3
-      - 5
   - !ruby/object:King
     piece: "\e[97m♚"
     position:
@@ -98,7 +75,7 @@
       - 6
     - - 0
       - 7
-:player2: !ruby/object:Player
+:player2: &1 !ruby/object:Player
   name: black
   color: "\e[30m"
   pieces:
@@ -122,40 +99,48 @@
   - !ruby/object:Queen
     piece: "\e[30m♛"
     position:
-    - 4
+    - 5
     - 5
     type: queen
     children:
-    - - 4
-      - 6
-    - - 4
-      - 7
     - - 5
       - 6
+    - - 5
+      - 7
     - - 6
+      - 6
+    - - 7
       - 7
-    - - 5
-      - 5
     - - 6
       - 5
     - - 7
       - 5
+    - - 6
+      - 4
+    - - 7
+      - 3
     - - 5
       - 4
-    - - 6
+    - - 5
       - 3
-    - - 7
+    - - 5
       - 2
-    - - 4
-      - 4
-    - - 3
-      - 4
-    - - 2
-      - 3
-    - - 1
-      - 2
-    - - 0
+    - - 5
       - 1
+    - - 5
+      - 0
+    - - 4
+      - 4
+    - - 3
+      - 3
+    - - 2
+      - 2
+    - - 1
+      - 1
+    - - 0
+      - 0
+    - - 4
+      - 5
     - - 3
       - 5
     - - 2
@@ -164,9 +149,9 @@
       - 5
     - - 0
       - 5
-    - - 3
+    - - 4
       - 6
-    - - 2
+    - - 3
       - 7
   - !ruby/object:Bishop
     piece: "\e[30m♝"
@@ -181,4 +166,12 @@
       - 6
     - - 4
       - 5
+    - - 3
+      - 4
+    - - 2
+      - 3
+    - - 1
+      - 2
+    - - 0
+      - 1
 :active_player: *1

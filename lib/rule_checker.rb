@@ -48,7 +48,7 @@ end
 def backtracking(selected, piece)
   a = selected[0] <=> piece[0]
   b = selected[1] <=> piece[1]
-  [selected[0] + a, selected[1] + b]
+  [[selected[0] + a, selected[1] + b]]
 end
 
 # checks for passing pawns and if eligible capture 
@@ -66,7 +66,6 @@ end
 
 # capture a piece,including pawn en passant logic
 def capturing(selected, new_tile)
-  opponent = active_player == player1 ? player2 : player1
   piece = opponent.pieces.find { |piece| piece.position == new_tile }
   opponent.pieces -= [piece]
   if selected.type == 'pawn' && piece.type == 'pawn' && piece.passant == true 
@@ -79,19 +78,67 @@ def capturing(selected, new_tile)
 end
 
 def in_check?
-  opponent = active_player == player1 ? player2 : player1
-  king = active_player.pieces.find { |p| p.type == 'king'}
+  king = active_player.pieces.find { |p| p.type == 'king' }
+  threats = []
   opponent.pieces.each do |p|
     if p.type == 'pawn'
-      return true if (p.c_children & [king.position]).any?
+      threats << p if (p.c_children & [king.position]).any?
     else
-      return true if (p.children & [king.position]).any?
+      threats << p if (p.children & [king.position]).any?
     end
   end
-  false
+  return false if threats.empty?
+  threats
 end
 
-def find_forced_moveset
-  puts "find forced moveset called.returning empty hash"
-  Hash.new
+def find_forced_moveset(threats)
+  puts "find_forced_moveset called.returning options"
+  puts "# of threats: #{threats.length}"
+  options = []
+  king = active_player.pieces.find { |p| p.type == 'king' }
+  puts "king:#{king.piece + reset}. pos:#{king.position}"
+  king_moveset = move_checker(king, active_player.pieces, opponent.pieces)
+  if threats.length > 1
+    #return only king moveset
+    options << [king, king_moveset]
+  else
+    #return king moveset,captures and block pieces, with their movesets
+    threat = threats[0]
+    #find intersection if exists else nil
+    intersection = find_intersections(king, threat)
+    puts "intersection:#{intersection}"
+    options << [king, king_moveset]
+    #todo: when intersection is nil just check for captures else check more blocks and captures
+    active_player.pieces.each do |p|
+      next if p.type == 'king'
+      if p.type == 'pawn'
+        if (p.m_children & intersection).any? || (p.c_children & threat.position).any?
+          moveset = { legal_moves: [], captures: [] }
+          moveset[:legal_moves] << intersection.flatten if (p.m_children & intersection).any?
+          moveset[:captures] << threat.position if (p.c_children & threat.position).any?
+          options << [p, moveset]
+        end
+      else
+        if (p.children & intersection).any? || (p.children & threat.position).any?
+          moveset = { legal_moves: [], captures: [] }
+          moveset[:legal_moves] << intersection.flatten if (p.children & intersection).any?
+          moveset[:captures] << threat.position if (p.children & threat.position).any?
+          options << [p, moveset]
+        end
+      end
+    end
+  end
+  options
+end
+
+def find_intersections(king, piece)
+  if (king.children & [piece.position]).any?
+    return nil
+  else
+    intersection = king.children & piece.children
+    if intersection.length > 1 && piece.type == 'queen'
+      puts "  finding middle child"
+      intersection = [[(king.position[0] + piece.position[0])/2, (king.position[1] + piece.position[1])/2]]
+    end
+  end
 end
