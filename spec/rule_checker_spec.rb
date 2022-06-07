@@ -10,7 +10,7 @@ describe '#backtracting' do
       it 'returns tile a8' do
         king_pos = king.position
         queen_pos = queen.position
-        correct_tile = [0,0]
+        correct_tile = [[0,0]]
         result = backtracking(king_pos, queen_pos)
         expect(result).to eq(correct_tile)
       end
@@ -33,6 +33,36 @@ describe '#en_passant' do
       it 'returns an empty array' do
         result = en_passant(white_pawn, black_pawn)
         expect(result).to eq([])
+      end
+    end
+  end
+end
+
+describe '#find_interceptions' do
+  context 'when white king is in check by opponent' do
+    let(:white_king)  { double('king', position: [0,4], type: 'king') }
+    let(:black_rook)  { double('rook', position: [0,0], type: 'rook') }
+    let(:black_queen) { double('queen', position: [4,0], type: 'queen') }
+    let(:black_knight) { double('knight', position: [1,2], type: 'knight') }
+    context 'king is at e8 and black rook is at a8' do
+      it 'returns an array with 3 elements of array coordinates' do
+        correct_set = [[0,1],[0,2],[0,3]]
+        result = find_interceptions(white_king, black_rook)
+        expect(result.sort).to eq(correct_set.sort)
+      end
+    end
+    context 'king is at e8 and black queen is at a4' do
+      it 'returns an array with 3 elements of array coordinates' do
+        correct_set = [[3,1],[2,2],[1,3]]
+        result = find_interceptions(white_king, black_queen)
+        expect(result.sort).to eq(correct_set.sort)
+      end
+    end
+    context 'king is at e8 and black knight at c7' do
+      it 'returns an empty array' do
+        correct_set = []
+        result = find_interceptions(white_king,black_knight)
+        expect(result.sort).to eq(correct_set.sort)
       end
     end
   end

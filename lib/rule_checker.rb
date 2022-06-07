@@ -93,10 +93,9 @@ end
 
 def find_forced_moveset(threats)
   puts "find_forced_moveset called.returning options"
-  puts "# of threats: #{threats.length}"
   options = []
   king = active_player.pieces.find { |p| p.type == 'king' }
-  puts "king:#{king.piece + reset}. pos:#{king.position}"
+  puts " # of threats: #{threats.length} for king:#{king.piece + reset} pos:#{king.position}"
   king_moveset = move_checker(king, active_player.pieces, opponent.pieces)
   if threats.length > 1
     #return only king moveset
@@ -104,25 +103,27 @@ def find_forced_moveset(threats)
   else
     #return king moveset,captures and block pieces, with their movesets
     threat = threats[0]
-    #find intersection if exists else nil
-    intersection = find_intersections(king, threat)
-    puts "intersection:#{intersection}"
+    #find interception if exists else nil
+    interception = find_interceptions(king, threat)
+    puts "  interception:#{interception}"
     options << [king, king_moveset]
-    #todo: when intersection is nil just check for captures else check more blocks and captures
+    #todo: when interception is nil just check for captures else check more blocks and captures
     active_player.pieces.each do |p|
       next if p.type == 'king'
+      puts "location:#{p.position} children:#{p.children}"
       if p.type == 'pawn'
-        if (p.m_children & intersection).any? || (p.c_children & threat.position).any?
+        if (p.m_children & interception).any? || (p.c_children & [threat.position]).any?
           moveset = { legal_moves: [], captures: [] }
-          moveset[:legal_moves] << intersection.flatten if (p.m_children & intersection).any?
-          moveset[:captures] << threat.position if (p.c_children & threat.position).any?
+          moveset[:legal_moves] << interception.flatten if (p.m_children & interception).any?
+          moveset[:captures] << threat.position if (p.c_children & [threat.position]).any?
           options << [p, moveset]
         end
       else
-        if (p.children & intersection).any? || (p.children & threat.position).any?
+        puts "  blocking?:#{(p.children & interception).any?} captures?:#{(p.children & [threat.position]).any?}"
+        if (p.children & interception).any? || (p.children & [threat.position]).any?
           moveset = { legal_moves: [], captures: [] }
-          moveset[:legal_moves] << intersection.flatten if (p.children & intersection).any?
-          moveset[:captures] << threat.position if (p.children & threat.position).any?
+          moveset[:legal_moves] << interception.flatten if (p.children & interception).any?
+          moveset[:captures] << threat.position if (p.children & [threat.position]).any?
           options << [p, moveset]
         end
       end
@@ -131,14 +132,21 @@ def find_forced_moveset(threats)
   options
 end
 
-def find_intersections(king, piece)
-  if (king.children & [piece.position]).any?
-    return nil
-  else
-    intersection = king.children & piece.children
-    if intersection.length > 1 && piece.type == 'queen'
-      puts "  finding middle child"
-      intersection = [[(king.position[0] + piece.position[0])/2, (king.position[1] + piece.position[1])/2]]
-    end
+def find_interceptions(king, piece)
+  interceptions = []
+  return interceptions if ['pawn','knight'].include?(piece.type)
+  
+  dir = direction(king.position, piece.position)
+  y = king.position[0]
+  x = king.position[1]
+  until [y += dir[0], x += dir[1]] == piece.position
+    interceptions << [y, x]
   end
+  interceptions
+end
+
+def direction(king, piece)
+  a = piece[0] <=> king[0]
+  b = piece[1] <=> king[1]
+  [a, b]
 end
