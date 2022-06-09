@@ -77,8 +77,8 @@ def capturing(selected, new_tile)
   board.update_pieces(player1.pieces, player2.pieces)
 end
 
-def in_check?
-  king = active_player.pieces.find { |p| p.type == 'king' }
+def find_threats
+  king = find_king
   threats = []
   opponent.pieces.each do |p|
     if p.type == 'pawn'
@@ -87,46 +87,37 @@ def in_check?
       threats << p if (p.children & [king.position]).any?
     end
   end
-  return false if threats.empty?
   threats
 end
 
+def find_king
+  active_player.pieces.find { |p| p.type == 'king' }
+end
+
 def find_forced_moveset(threats)
-  puts "find_forced_moveset called.returning options"
   options = []
-  king = active_player.pieces.find { |p| p.type == 'king' }
-  puts " # of threats: #{threats.length} for king:#{king.piece + reset} pos:#{king.position}"
+  king = find_king
   king_moveset = move_checker(king, active_player.pieces, opponent.pieces)
-  if threats.length > 1
-    #return only king moveset
-    options << [king, king_moveset]
-  else
-    #return king moveset,captures and block pieces, with their movesets
-    threat = threats[0]
-    #find interception if exists else nil
-    interception = find_interceptions(king, threat)
-    puts "  interception:#{interception}"
-    options << [king, king_moveset]
-    #todo: when interception is nil just check for captures else check more blocks and captures
-    active_player.pieces.each do |p|
-      next if p.type == 'king'
-      puts "location:#{p.position} children:#{p.children}"
-      if p.type == 'pawn'
-        if (p.m_children & interception).any? || (p.c_children & [threat.position]).any?
-          moveset = { legal_moves: [], captures: [] }
-          moveset[:legal_moves] << interception.flatten if (p.m_children & interception).any?
-          moveset[:captures] << threat.position if (p.c_children & [threat.position]).any?
-          options << [p, moveset]
-        end
-      else
-        puts "  blocking?:#{(p.children & interception).any?} captures?:#{(p.children & [threat.position]).any?}"
-        if (p.children & interception).any? || (p.children & [threat.position]).any?
-          moveset = { legal_moves: [], captures: [] }
-          moveset[:legal_moves] << interception.flatten if (p.children & interception).any?
-          moveset[:captures] << threat.position if (p.children & [threat.position]).any?
-          options << [p, moveset]
-        end
-      end
+  options << [king, king_moveset]
+  return options if threats.length > 1
+
+  threat = threats[0]
+  interceptions = find_interceptions(king, threat)
+  active_player.pieces.each do |p|
+    next if p.type == 'king'
+
+    if p.type == 'pawn'
+      blocks = p.m_children & interceptions
+      captures = p.c_children & [threat.position]
+    else
+      blocks = p.children & interceptions
+      captures = p.children & [threat.position]
+    end
+    if blocks.any? || captures.any?
+      moveset = { legal_moves: [], captures: [] }
+      moveset[:legal_moves] = blocks if blocks.any?
+      moveset[:captures] << threat.position if captures.any?
+      options << [p, moveset]
     end
   end
   options
