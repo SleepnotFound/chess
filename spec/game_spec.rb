@@ -72,7 +72,7 @@ describe Game do
     end
   end
 
-  describe '#find_piece' do
+  describe '#select_piece' do
     subject(:game_find) { described_class.new }
     context 'when it\'s player white\'s turn ' do
       let(:king_piece) { double('King', type: 'king', position: [7,4]) }
@@ -87,7 +87,7 @@ describe Game do
           error_message = 'cannot go \'back\' at the start of your turn!'
           expect(game_find).to receive(:puts).with(error_message)
           expect(game_find).to receive(:save_game)
-          game_find.find_piece
+          game_find.select_piece
         end
       end
       context 'then player enters incorrect then correct location of piece(e1)' do
@@ -99,7 +99,7 @@ describe Game do
         end
         it 'outputs error message then returns the players piece' do
           expect(game_find).to receive(:puts).with('could not find piece.')
-          result = game_find.find_piece
+          result = game_find.select_piece
           expect(result).to eq(king_piece)
         end
       end
@@ -108,7 +108,7 @@ describe Game do
 
   describe '#next_move' do
     subject(:game_next_move) { described_class.new }
-    let(:king_piece) { double('King', type: 'king', position: [7,4]) }
+    let(:king_piece) { double('King', type: 'king', position: [7,4], on_first_move: true) }
     context 'when user inputs \'save\' and then \'back\'' do
       before do
         allow(game_next_move).to receive(:get_player_input).and_return('save', 'back')
@@ -125,12 +125,12 @@ describe Game do
       before do
         input = 'e2'
         allow(game_next_move).to receive(:get_player_input).and_return(input)
-        allow(king_piece).to receive(:update)
+        allow(king_piece).to receive(:position=)
       end
       it 'returns true and updates the array element' do
-        movements = [[6,4],[6,5]]
+        movements = {:legal_moves=>[[7, 5], [7, 3], [6, 3], [6, 4], [6, 5]], :captures=>[]}
         result = game_next_move.next_move(movements, king_piece)
-        expect(king_piece).to respond_to(:update).with(1).arguments
+        expect(king_piece).to respond_to(:on_first_move)
         expect(result).to be(true)
       end
     end

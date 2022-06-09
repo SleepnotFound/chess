@@ -24,19 +24,22 @@ class Game
     set_game
     #add_piece
     board.update_pieces(player1.pieces, player2.pieces)
-    game_over = false
-    until game_over
-      #check for check/mate
-      threats = in_check?
-      if threats
-        #calculate moving out of check/blocking/capturing for king
+    loop do 
+      threats = find_threats
+      puts "threats:#{threats.length}"
+      if threats.any?
         forced_moveset = find_forced_moveset(threats)
-        if forced_moveset.empty?
-          #if forced_moveset is empty then checkmate
-          puts "checkmate!"
-          #game_over = true
+        puts "options:#{forced_moveset.length}"
+        if forced_moveset.length == 1
+          options = forced_moveset[0][1]
+          if options[:legal_moves].empty? && options[:captures].empty?
+            puts "checkmate!"
+            break
+          else
+            puts 'only king can take action!'
+            player_turn(true, forced_moveset)
+          end
         else
-          #use forced_set to continue game.player must use forced_moveset
           puts "not checkmate. the use of forced_moveset is as followed:"
           forced_moveset.each { |fm| puts "#{fm[0].type}: #{fm[1]}" }
           player_turn(true, forced_moveset)
@@ -47,6 +50,7 @@ class Game
       self.active_player = active_player == player1 ? player2 : player1
     end
     puts "end of game"
+    puts "active player:#{active_player.name}"
   end
   
   def player_turn(check = false, forced_moveset = nil)
@@ -104,6 +108,7 @@ class Game
       else 
         new_tile = convert_to_array_cords(new_input)
         if movements[:legal_moves].include?(new_tile)
+          puts "new tile:#{new_tile}"
           selected.position = new_tile
           update_all_pieces
           if selected.type == 'pawn'
