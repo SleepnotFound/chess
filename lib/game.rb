@@ -26,6 +26,11 @@ class Game
     board.update_pieces(player1.pieces, player2.pieces)
     loop do 
       threats = find_threats
+      if threats.empty? && stalemate? 
+        board.build_board
+        puts "Stalemate!"
+        break
+      end
       forced_moveset = begin_with_moveset(threats)
       if forced_moveset.nil?
         board.build_board

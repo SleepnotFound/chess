@@ -149,3 +149,14 @@ def begin_with_moveset(threats)
     false
   end
 end
+
+
+def stalemate?
+  active_player.pieces.each do |p|
+    moves = move_checker(p, active_player.pieces, opponent.pieces)
+    if moves[:legal_moves].any? || moves[:captures].any?
+      return false
+    end
+  end
+  true
+end
