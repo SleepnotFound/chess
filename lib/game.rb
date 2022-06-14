@@ -3,7 +3,6 @@ require_relative 'player'
 require_relative 'pieces'
 require_relative 'load_save'
 require_relative 'rule_checker'
-require_relative 'new_game'
 require 'yaml'
 
 class Game 
