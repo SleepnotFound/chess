@@ -150,7 +150,7 @@ def begin_with_moveset(threats)
   end
 end
 
-
+# todo: include stalemate when kings are only pieces left
 def stalemate?
   active_player.pieces.each do |p|
     moves = move_checker(p, active_player.pieces, opponent.pieces)

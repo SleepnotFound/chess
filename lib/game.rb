@@ -3,9 +3,7 @@ require_relative 'player'
 require_relative 'pieces'
 require_relative 'load_save'
 require_relative 'rule_checker'
-require_relative 'queen'
-require_relative 'bishop'
-require_relative 'pawn'
+require_relative 'new_game'
 require 'yaml'
 
 class Game 
@@ -34,16 +32,16 @@ class Game
       forced_moveset = begin_with_moveset(threats)
       if forced_moveset.nil?
         board.build_board
-        puts "checkmate!"
+        puts "checkmate!\nPlayer #{opponent.name} has won!"
         break
       end
       forced_moveset ? player_turn(true, forced_moveset) : player_turn
       self.active_player = active_player == player1 ? player2 : player1
     end
     puts "end of game"
-    puts "active player:#{active_player.name}"
   end
   
+  # todo: utilize force_moveset to lock player from making any other moves
   def player_turn(check = false, forced_moveset = nil)
     loop do
       board.build_board
@@ -52,7 +50,7 @@ class Game
       selected = select_piece
 
       selected_moveset = move_checker(selected, active_player.pieces, opponent.pieces)
-      puts "legal moves:#{selected_moveset} for position:#{selected.position}"
+      #puts "legal moves:#{selected_moveset} for position:#{selected.position}"
 
       board.visualize_moves(selected_moveset, selected.position)
       puts "selected piece: #{selected.piece + reset}\nType \'back\' to go back or"
@@ -136,8 +134,8 @@ class Game
   end
 
   def set_game
-    case mode = '1'
-    #case mode = verify_mode
+    #case mode = '1'
+    case mode = verify_mode
     when '0'
       #display instructions/controls then jump to new game
     when '1'
@@ -146,7 +144,8 @@ class Game
       self.player2 = data[:player2]
       self.active_player = data[:active_player]
     when '2'
-      #new human vs computer
+      new_game
+      update_all_pieces
     else
       puts "game could not set up..."
     end
@@ -201,7 +200,7 @@ class Game
   end
 
   def get_mode
-    puts "press:\n0) for instructions\n1) to load game\n2) for human vs computer"
+    puts "press:\n0) for instructions\n1) to load game\n2) for new game"
     gets.chomp
   end
 end
