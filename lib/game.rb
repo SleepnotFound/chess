@@ -26,27 +26,13 @@ class Game
     board.update_pieces(player1.pieces, player2.pieces)
     loop do 
       threats = find_threats
-      puts "threats:#{threats.length}"
-      if threats.any?
-        forced_moveset = find_forced_moveset(threats)
-        puts "options:#{forced_moveset.length}"
-        if forced_moveset.length == 1
-          options = forced_moveset[0][1]
-          if options[:legal_moves].empty? && options[:captures].empty?
-            puts "checkmate!"
-            break
-          else
-            puts 'only king can take action!'
-            player_turn(true, forced_moveset)
-          end
-        else
-          puts "not checkmate. the use of forced_moveset is as followed:"
-          forced_moveset.each { |fm| puts "#{fm[0].type}: #{fm[1]}" }
-          player_turn(true, forced_moveset)
-        end
-      else
-        player_turn
+      forced_moveset = begin_with_moveset(threats)
+      if forced_moveset.nil?
+        board.build_board
+        puts "checkmate!"
+        break
       end
+      forced_moveset ? player_turn(true, forced_moveset) : player_turn
       self.active_player = active_player == player1 ? player2 : player1
     end
     puts "end of game"
@@ -108,7 +94,6 @@ class Game
       else 
         new_tile = convert_to_array_cords(new_input)
         if movements[:legal_moves].include?(new_tile)
-          puts "new tile:#{new_tile}"
           selected.position = new_tile
           update_all_pieces
           if selected.type == 'pawn'
@@ -121,7 +106,7 @@ class Game
         elsif movements[:captures].include?(new_tile)
           capturing(selected, new_tile)
           update_all_pieces
-          selected.on_first_move = false if selected.type == 'pawn'
+          selected.on_first_move = false if ['pawn','king','rook'].include?(selected.type)
           return true
         else
           puts "invalid. move into a cyan dot or capture any green tile"

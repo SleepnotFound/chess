@@ -56,12 +56,9 @@ def en_passant(selected, piece)
   left  = [selected.position[0], selected.position[1] - 1]
   right = [selected.position[0], selected.position[1] + 1]
   overlap = [left, right] & [piece.position]
-  if overlap.any? 
-    return overlap if piece.passant
-    []
-  else 
-    []
-  end
+  return overlap if overlap.any? && piece.passant
+  
+  []
 end
 
 # capture a piece,including pawn en passant logic
@@ -97,8 +94,8 @@ end
 def find_forced_moveset(threats)
   options = []
   king = find_king
-  king_moveset = move_checker(king, active_player.pieces, opponent.pieces)
-  options << [king, king_moveset]
+  k_moveset = move_checker(king, active_player.pieces, opponent.pieces)
+  options << [king, k_moveset] unless k_moveset[:legal_moves].empty? && k_moveset[:captures].empty?
   return options if threats.length > 1
 
   threat = threats[0]
@@ -140,4 +137,15 @@ def direction(king, piece)
   a = piece[0] <=> king[0]
   b = piece[1] <=> king[1]
   [a, b]
+end
+
+def begin_with_moveset(threats)
+  if threats.any?
+    forced_moveset = find_forced_moveset(threats)
+    return nil if forced_moveset.length == 0
+
+    forced_moveset
+  else
+    false
+  end
 end
