@@ -34,23 +34,26 @@ class Game
         puts "checkmate!\nPlayer #{opponent.name} has won!"
         break
       end
-      forced_moveset ? player_turn(true, forced_moveset) : player_turn
+      forced_moveset ? player_turn(forced_moveset) : player_turn
       self.active_player = active_player == player1 ? player2 : player1
     end
     puts "end of game"
   end
   
-  # todo: utilize force_moveset to lock player from making any other moves
-  def player_turn(check = false, forced_moveset = nil)
+  def player_turn(forced_moveset = nil)
     loop do
       board.build_board
       puts "Player #{active_player.name}\'s turn"
-      puts "\e[1mYou are in check!\e[0m" if check
-      selected = select_piece
-
-      selected_moveset = move_checker(selected, active_player.pieces, opponent.pieces)
+      if forced_moveset 
+        puts "\e[1mYou are in check!\e[0m"
+        set = select_piece(forced_moveset)
+        selected = set[0]
+        selected_moveset = set[1]
+      else
+        selected = select_piece
+        selected_moveset = move_checker(selected, active_player.pieces, opponent.pieces)
+      end
       #puts "legal moves:#{selected_moveset} for position:#{selected.position}"
-
       board.visualize_moves(selected_moveset, selected.position)
       puts "selected piece: #{selected.piece + reset}\nType \'back\' to go back or"
       break if next_move(selected_moveset, selected)
@@ -68,7 +71,7 @@ class Game
     active_player == player1 ? player2 : player1
   end
 
-  def select_piece
+  def select_piece(forced_moveset = nil)
     loop do
       case player_input = get_player_input
       when 'save'
@@ -77,10 +80,12 @@ class Game
         puts "cannot go 'back' at the start of your turn!"
       else
         tile = convert_to_array_cords(player_input)
-        if selected = self.active_player.pieces.find { |piece| piece.position == tile }
-          return selected
+        if forced_moveset 
+          return selected if selected = forced_moveset.find { |s| s[0].position == tile }
+          puts "Invalid. Your king is in check!"
         else
-          puts "could not find piece."
+          return selected if selected = self.active_player.pieces.find { |piece| piece.position == tile }
+          puts "Could not find piece."
         end
       end
     end
