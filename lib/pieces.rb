@@ -4,6 +4,7 @@ module Pieces
   def white;        "\e[97m"  end
   def black;        "\e[30m"  end
   def cyan;         "\e[96m"  end
+  def yellow;       "\e[33m"  end
   def b_cyan;       "\e[106m" end
   def b_red;        "\e[41m"  end
   def b_green;      "\e[42m"  end

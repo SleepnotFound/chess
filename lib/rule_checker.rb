@@ -65,7 +65,7 @@ end
 def capturing(selected, new_tile)
   piece = opponent.pieces.find { |piece| piece.position == new_tile }
   opponent.pieces -= [piece]
-  if selected.type == 'pawn' && piece.type == 'pawn' && piece.passant == true 
+  if selected.type == 'pawn' && piece.type == 'pawn' && (en_passant(selected, piece)).any?
     y = piece.piece.include?(black) ? piece.position[0] - 1 : piece.position[0] + 1
     selected.position = [y, piece.position[1]]
   else
