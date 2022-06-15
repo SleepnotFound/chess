@@ -19,7 +19,6 @@ class Game
 
   def play
     set_game
-    #add_piece
     board.update_pieces(player1.pieces, player2.pieces)
     loop do 
       threats = find_threats
@@ -81,10 +80,12 @@ class Game
       else
         tile = convert_to_array_cords(player_input)
         if forced_moveset 
-          return selected if selected = forced_moveset.find { |s| s[0].position == tile }
+          selected = forced_moveset.find { |s| s[0].position == tile }
+          return selected if selected
           puts "Invalid. Your king is in check!"
         else
-          return selected if selected = self.active_player.pieces.find { |piece| piece.position == tile }
+          selected = self.active_player.pieces.find { |piece| piece.position == tile }
+          return selected if selected
           puts "Could not find piece."
         end
       end
@@ -130,11 +131,6 @@ class Game
       ['queen', 'rook', 'bishop'].include?(p.type) ? p.make_children(occupied_tiles) : p.make_children
       p.passant = false if p.type == 'pawn'
     end
-  end
-
-  def add_piece
-    new_piece = Pawn.new(black + pawn, [1,3])
-    player2.pieces << new_piece
   end
 
   def set_game

@@ -73,34 +73,51 @@ describe Game do
   end
 
   describe '#select_piece' do
-    subject(:game_find) { described_class.new }
-    context 'when it\'s player white\'s turn ' do
+    subject(:game_select) { described_class.new }
+    context 'when selecting player white\'s king at e1 ' do
       let(:king_piece) { double('King', type: 'king', position: [7,4]) }
       let(:active_player) { double('player', pieces: [king_piece]) }
       context 'then player enters \'back\' then \'save\'' do
         before do
-          game_find.instance_variable_set(:@active_player, active_player)
-          allow(game_find).to receive(:get_player_input).and_return('back', 'save', 'e1')
-          allow(game_find).to receive(:save_game)
+          game_select.instance_variable_set(:@active_player, active_player)
+          allow(game_select).to receive(:get_player_input).and_return('back', 'save', 'e1')
+          allow(game_select).to receive(:save_game)
         end
-        it 'outputs error message and calls method save_game' do
+        it 'outputs error message once then calls method save_game' do
           error_message = 'cannot go \'back\' at the start of your turn!'
-          expect(game_find).to receive(:puts).with(error_message)
-          expect(game_find).to receive(:save_game)
-          game_find.select_piece
+          expect(game_select).to receive(:puts).with(error_message).once
+          expect(game_select).to receive(:save_game)
+          game_select.select_piece
         end
       end
-      context 'then player enters incorrect then correct location of piece(e1)' do
+      context 'then player enters incorrect then correct location of piece' do
         before do
           incorrect_input = 'e6'
-          input = 'e1'
-          game_find.instance_variable_set(:@active_player, active_player)
-          allow(game_find).to receive(:get_player_input).and_return(incorrect_input, input)
+          correct_input = 'e1'
+          game_select.instance_variable_set(:@active_player, active_player)
+          allow(game_select).to receive(:get_player_input).and_return(incorrect_input, correct_input)
         end
-        it 'outputs error message then returns the players piece' do
-          expect(game_find).to receive(:puts).with('could not find piece.')
-          result = game_find.select_piece
+        it 'outputs error message once then returns the players piece' do
+          expect(game_select).to receive(:puts).with('Could not find piece.').once
+          result = game_select.select_piece
           expect(result).to eq(king_piece)
+        end
+      end
+    end
+    context 'when player white\'s king at a1 is in check' do
+      let(:king_piece) { double('King', type: 'king', position: [7,0]) }
+      let(:active_player) { double('player', pieces: [king_piece]) }
+      context 'then forced to select king at a1' do
+        before do
+          game_select.instance_variable_set(:@active_player, active_player)
+          forced_input = 'a1'
+          allow(game_select).to receive(:get_player_input).and_return(forced_input)
+        end
+        it 'outputs a size 2 array of the king object[0] and moveset[1]' do
+          moveset = { legal_moves: [[7,1]], captures: [] }
+          forced_moveset = [[king_piece, moveset]]
+          result = game_select.select_piece(forced_moveset)
+          expect(result).to eq(forced_moveset[0])
         end
       end
     end
