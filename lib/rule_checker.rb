@@ -1,6 +1,7 @@
 require_relative 'pieces'
 include Pieces
 
+# resposible for determining available actions of selected piece
 def move_checker(selected, player_set, opponent_set)
   all_pieces = player_set + opponent_set
   illegal_tiles = []
@@ -44,14 +45,14 @@ def move_checker(selected, player_set, opponent_set)
   end
 end
 
-# ensures king does not move back into check when checked by queen,bishop,rook
+# returns the tile behind selected. prevents moving back into check
 def backtracking(selected, piece)
   a = selected[0] <=> piece[0]
   b = selected[1] <=> piece[1]
   [[selected[0] + a, selected[1] + b]]
 end
 
-# checks for passing pawns and if eligible capture 
+# checks for passing pawns and returns adjacent pawns
 def en_passant(selected, piece)
   left  = [selected.position[0], selected.position[1] - 1]
   right = [selected.position[0], selected.position[1] + 1]
@@ -61,7 +62,7 @@ def en_passant(selected, piece)
   []
 end
 
-# capture a piece,including pawn en passant logic
+# replace capture target with selected, including en passant pawns
 def capturing(selected, new_tile)
   piece = opponent.pieces.find { |piece| piece.position == new_tile }
   opponent.pieces -= [piece]
@@ -74,6 +75,7 @@ def capturing(selected, new_tile)
   board.update_pieces(player1.pieces, player2.pieces)
 end
 
+# find if king is in check by 1 or multiple pieces
 def find_threats
   king = find_king
   threats = []
@@ -91,6 +93,7 @@ def find_king
   active_player.pieces.find { |p| p.type == 'king' }
 end
 
+# returns options to get out of check via moving\blocking\captures
 def find_forced_moveset(threats)
   options = []
   king = find_king
@@ -120,6 +123,7 @@ def find_forced_moveset(threats)
   options
 end
 
+# returns spots where a piece can block its king from check, if any
 def find_interceptions(king, piece)
   interceptions = []
   return interceptions if ['pawn','knight'].include?(piece.type)
@@ -139,6 +143,7 @@ def direction(king, piece)
   [a, b]
 end
 
+# determines if player round should start with a forced moveset
 def begin_with_moveset(threats)
   if threats.any?
     forced_moveset = find_forced_moveset(threats)
@@ -150,7 +155,7 @@ def begin_with_moveset(threats)
   end
 end
 
-# todo: include stalemate when kings are only pieces left
+# determines if all pieces can no longer move, return true
 def stalemate?
   active_player.pieces.each do |p|
     moves = move_checker(p, active_player.pieces, opponent.pieces)
@@ -159,4 +164,29 @@ def stalemate?
     end
   end
   true
+end
+
+# for pawns. decides if pawn reached furthest rank
+def promote?(piece)
+  last_rank = piece.piece.include?(white) ? 0 : 7
+  return true if piece.position[0] == last_rank
+  
+  false
+end
+
+def promote(selected)
+  color = selected.piece.include?(white) ? white : black
+  pos = selected.position
+  choice = get_promotion
+  set = [
+        Queen.new(color + queen, pos), 
+        Rook.new(color + rook, pos),
+        Bishop.new(color + bishop, pos),
+        Knight.new(color + knight, pos)
+        ]
+
+  new_piece = set[choice - 1]
+  active_player.pieces -= [selected]
+  active_player.pieces += [new_piece]
+  board.update_pieces(player1.pieces, player2.pieces)
 end

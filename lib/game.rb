@@ -66,6 +66,11 @@ class Game
     end
   end
 
+  def get_promotion
+    piece = get_piece until (1..4).include?(piece)
+    piece
+  end
+
   def opponent
     active_player == player1 ? player2 : player1
   end
@@ -103,18 +108,38 @@ class Game
         new_tile = convert_to_array_cords(new_input)
         if movements[:legal_moves].include?(new_tile)
           selected.position = new_tile
-          update_all_pieces
           if selected.type == 'pawn'
-            selected.on_first_move = false
-            selected.passant = true if movements[:legal_moves][1] == new_tile
+            if promote?(selected)
+              promote(selected)
+              update_all_pieces
+            else
+              update_all_pieces
+              selected.on_first_move = false
+              selected.passant = true if movements[:legal_moves][1] == new_tile
+            end
           elsif selected.type == 'king' || selected.type == 'rook' 
+            update_all_pieces
             selected.on_first_move == false
+          else
+            update_all_pieces
           end
           return true
         elsif movements[:captures].include?(new_tile)
           capturing(selected, new_tile)
-          update_all_pieces
-          selected.on_first_move = false if ['pawn','king','rook'].include?(selected.type)
+          if selected.type == 'pawn'
+            if promote?(selected)
+              promote(selected)
+              update_all_pieces
+            else
+              update_all_pieces
+              selected.on_first_move = false
+            end
+          elsif selected.type == 'king' || selected.type == 'rook'
+            update_all_pieces
+            selected.on_first_move == false
+          else
+            update_all_pieces
+          end
           return true
         else
           puts "invalid. move into a cyan dot or capture any green tile"
@@ -202,5 +227,10 @@ class Game
   def get_mode
     puts "press:\n0) for instructions\n1) to load game\n2) for new game"
     gets.chomp
+  end
+
+  def get_piece
+    puts "Type in the number you wish to receive:\n1)Queen\n2)Rook\n3)bishop\n4)Knight"
+    gets.chomp.to_i
   end
 end

@@ -3,98 +3,139 @@
   name: white
   color: "\e[97m"
   pieces:
-  - !ruby/object:King
-    piece: "\e[97m♚"
+  - !ruby/object:Pawn
+    piece: "\e[97m♟"
     position:
-    - 3
+    - 1
+    - 1
+    type: pawn
+    on_first_move: false
+    passant: false
+    c_children:
+    - - 0
+      - 0
+    - - 0
+      - 2
+    m_children:
+    - - 0
+      - 1
+  - !ruby/object:Rook
+    piece: "\e[97m♜"
+    position:
     - 7
-    type: king
+    - 0
+    type: rook
+    on_first_move: true
     children:
+    - - 7
+      - 1
+    - - 6
+      - 0
+    - - 5
+      - 0
     - - 4
-      - 7
-    - - 4
-      - 6
+      - 0
     - - 3
-      - 6
+      - 0
     - - 2
-      - 6
-    - - 2
-      - 7
+      - 0
+    - - 1
+      - 0
+  - !ruby/object:Pawn
+    piece: "\e[97m♟"
+    position:
+    - 6
+    - 1
+    type: pawn
+    on_first_move: true
+    passant: false
+    c_children:
+    - - 5
+      - 0
+    - - 5
+      - 2
+    m_children:
+    - - 5
+      - 1
+    - - 4
+      - 1
+  - !ruby/object:Knight
+    piece: "\e[97m♞"
+    position:
+    - 7
+    - 1
+    type: knight
+    children:
+    - - 5
+      - 0
+    - - 5
+      - 2
+    - - 6
+      - 3
+  - !ruby/object:Pawn
+    piece: "\e[97m♟"
+    position:
+    - 6
+    - 2
+    type: pawn
+    on_first_move: true
+    passant: false
+    c_children:
+    - - 5
+      - 1
+    - - 5
+      - 3
+    m_children:
+    - - 5
+      - 2
+    - - 4
+      - 2
+  - !ruby/object:Bishop
+    piece: "\e[97m♝"
+    position:
+    - 7
+    - 2
+    type: bishop
+    children:
+    - - 6
+      - 1
+    - - 6
+      - 3
+  - !ruby/object:Pawn
+    piece: "\e[97m♟"
+    position:
+    - 6
+    - 3
+    type: pawn
+    on_first_move: true
+    passant: false
+    c_children:
+    - - 5
+      - 2
+    - - 5
+      - 4
+    m_children:
+    - - 5
+      - 3
+    - - 4
+      - 3
   - !ruby/object:Queen
     piece: "\e[97m♛"
     position:
     - 7
-    - 7
+    - 3
     type: queen
     children:
     - - 7
-      - 6
-    - - 7
-      - 5
-    - - 7
       - 4
     - - 7
-      - 3
-    - - 7
       - 2
-    - - 7
-      - 1
-    - - 7
-      - 0
     - - 6
-      - 6
-    - - 5
-      - 5
-    - - 4
+      - 2
+    - - 6
+      - 3
+    - - 6
       - 4
-    - - 3
-      - 3
-    - - 2
-      - 2
-    - - 1
-      - 1
-    - - 0
-      - 0
-    - - 6
-      - 7
-  - !ruby/object:Pawn
-    piece: "\e[97m♟"
-    position:
-    - 4
-    - 0
-    type: pawn
-    on_first_move: false
-    passant: true
-    children:
-    - - 3
-      - 0
-    - - 3
-      - 1
-    c_children:
-    - - 3
-      - 1
-    m_children:
-    - - 3
-      - 0
-  - !ruby/object:Pawn
-    piece: "\e[97m♟"
-    position:
-    - 5
-    - 7
-    type: pawn
-    on_first_move: false
-    passant: false
-    children:
-    - - 4
-      - 7
-    - - 4
-      - 6
-    c_children:
-    - - 4
-      - 6
-    m_children:
-    - - 4
-      - 7
   - !ruby/object:Pawn
     piece: "\e[97m♟"
     position:
@@ -103,15 +144,6 @@
     type: pawn
     on_first_move: true
     passant: false
-    children:
-    - - 5
-      - 4
-    - - 4
-      - 4
-    - - 5
-      - 3
-    - - 5
-      - 5
     c_children:
     - - 5
       - 3
@@ -122,89 +154,98 @@
       - 4
     - - 4
       - 4
+  - !ruby/object:King
+    piece: "\e[97m♚"
+    position:
+    - 7
+    - 4
+    on_first_move: true
+    type: king
+    children:
+    - - 7
+      - 5
+    - - 7
+      - 3
+    - - 6
+      - 3
+    - - 6
+      - 4
+    - - 6
+      - 5
+  - !ruby/object:Pawn
+    piece: "\e[97m♟"
+    position:
+    - 6
+    - 5
+    type: pawn
+    on_first_move: true
+    passant: false
+    c_children:
+    - - 5
+      - 4
+    - - 5
+      - 6
+    m_children:
+    - - 5
+      - 5
+    - - 4
+      - 5
+  - !ruby/object:Bishop
+    piece: "\e[97m♝"
+    position:
+    - 7
+    - 5
+    type: bishop
+    children:
+    - - 6
+      - 4
+    - - 6
+      - 6
+  - !ruby/object:Knight
+    piece: "\e[97m♞"
+    position:
+    - 7
+    - 6
+    type: knight
+    children:
+    - - 6
+      - 4
+    - - 5
+      - 5
+    - - 5
+      - 7
+  - !ruby/object:Pawn
+    piece: "\e[97m♟"
+    position:
+    - 6
+    - 7
+    type: pawn
+    on_first_move: true
+    passant: false
+    c_children:
+    - - 5
+      - 6
+    m_children:
+    - - 5
+      - 7
+    - - 4
+      - 7
+  - !ruby/object:Rook
+    piece: "\e[97m♜"
+    position:
+    - 7
+    - 7
+    type: rook
+    on_first_move: true
+    children:
+    - - 7
+      - 6
+    - - 6
+      - 7
 :player2: !ruby/object:Player
   name: black
   color: "\e[30m"
   pieces:
-  - !ruby/object:King
-    piece: "\e[30m♚"
-    position:
-    - 4
-    - 5
-    type: king
-    children:
-    - - 4
-      - 6
-    - - 5
-      - 6
-    - - 5
-      - 5
-    - - 5
-      - 4
-    - - 4
-      - 4
-    - - 3
-      - 4
-    - - 3
-      - 5
-    - - 3
-      - 6
-  - !ruby/object:Queen
-    piece: "\e[30m♛"
-    position:
-    - 5
-    - 6
-    type: queen
-    children:
-    - - 5
-      - 7
-    - - 6
-      - 7
-    - - 6
-      - 6
-    - - 7
-      - 6
-    - - 6
-      - 5
-    - - 7
-      - 4
-    - - 5
-      - 5
-    - - 5
-      - 4
-    - - 5
-      - 3
-    - - 5
-      - 2
-    - - 5
-      - 1
-    - - 5
-      - 0
-    - - 4
-      - 5
-    - - 4
-      - 6
-    - - 3
-      - 6
-    - - 2
-      - 6
-    - - 1
-      - 6
-    - - 0
-      - 6
-    - - 4
-      - 7
-  - !ruby/object:Bishop
-    piece: "\e[30m♝"
-    position:
-    - 6
-    - 7
-    type: bishop
-    children:
-    - - 7
-      - 6
-    - - 5
-      - 6
   - !ruby/object:Pawn
     piece: "\e[30m♟"
     position:
@@ -213,13 +254,6 @@
     type: pawn
     on_first_move: true
     passant: false
-    children:
-    - - 2
-      - 0
-    - - 3
-      - 0
-    - - 2
-      - 1
     c_children:
     - - 2
       - 1
@@ -227,30 +261,61 @@
     - - 2
       - 0
     - - 3
+      - 0
+  - !ruby/object:Rook
+    piece: "\e[30m♜"
+    position:
+    - 0
+    - 0
+    type: rook
+    on_first_move: true
+    children:
+    - - 0
+      - 1
+    - - 1
+      - 0
+  - !ruby/object:Knight
+    piece: "\e[30m♞"
+    position:
+    - 0
+    - 1
+    type: knight
+    children:
+    - - 1
+      - 3
+    - - 2
+      - 2
+    - - 2
       - 0
   - !ruby/object:Pawn
     piece: "\e[30m♟"
     position:
-    - 4
-    - 3
+    - 1
+    - 2
     type: pawn
-    on_first_move: false
-    passant: true
-    children:
-    - - 5
-      - 3
-    - - 5
-      - 4
-    - - 5
-      - 2
+    on_first_move: true
+    passant: false
     c_children:
-    - - 5
-      - 4
-    - - 5
-      - 2
-    m_children:
-    - - 5
+    - - 2
       - 3
+    - - 2
+      - 1
+    m_children:
+    - - 2
+      - 2
+    - - 3
+      - 2
+  - !ruby/object:Bishop
+    piece: "\e[30m♝"
+    position:
+    - 0
+    - 2
+    type: bishop
+    children:
+    - - 1
+      - 3
+    - - 1
+      - 1
   - !ruby/object:Pawn
     piece: "\e[30m♟"
     position:
@@ -259,15 +324,6 @@
     type: pawn
     on_first_move: true
     passant: false
-    children:
-    - - 2
-      - 3
-    - - 3
-      - 3
-    - - 2
-      - 4
-    - - 2
-      - 2
     c_children:
     - - 2
       - 4
@@ -278,4 +334,155 @@
       - 3
     - - 3
       - 3
+  - !ruby/object:Queen
+    piece: "\e[30m♛"
+    position:
+    - 0
+    - 3
+    type: queen
+    children:
+    - - 0
+      - 4
+    - - 1
+      - 4
+    - - 1
+      - 3
+    - - 1
+      - 2
+    - - 0
+      - 2
+  - !ruby/object:Pawn
+    piece: "\e[30m♟"
+    position:
+    - 1
+    - 4
+    type: pawn
+    on_first_move: true
+    passant: false
+    c_children:
+    - - 2
+      - 5
+    - - 2
+      - 3
+    m_children:
+    - - 2
+      - 4
+    - - 3
+      - 4
+  - !ruby/object:King
+    piece: "\e[30m♚"
+    position:
+    - 0
+    - 4
+    on_first_move: true
+    type: king
+    children:
+    - - 0
+      - 5
+    - - 1
+      - 5
+    - - 1
+      - 4
+    - - 1
+      - 3
+    - - 0
+      - 3
+  - !ruby/object:Pawn
+    piece: "\e[30m♟"
+    position:
+    - 1
+    - 5
+    type: pawn
+    on_first_move: true
+    passant: false
+    c_children:
+    - - 2
+      - 6
+    - - 2
+      - 4
+    m_children:
+    - - 2
+      - 5
+    - - 3
+      - 5
+  - !ruby/object:Bishop
+    piece: "\e[30m♝"
+    position:
+    - 0
+    - 5
+    type: bishop
+    children:
+    - - 1
+      - 6
+    - - 1
+      - 4
+  - !ruby/object:Pawn
+    piece: "\e[30m♟"
+    position:
+    - 1
+    - 6
+    type: pawn
+    on_first_move: true
+    passant: false
+    c_children:
+    - - 2
+      - 7
+    - - 2
+      - 5
+    m_children:
+    - - 2
+      - 6
+    - - 3
+      - 6
+  - !ruby/object:Knight
+    piece: "\e[30m♞"
+    position:
+    - 0
+    - 6
+    type: knight
+    children:
+    - - 2
+      - 7
+    - - 2
+      - 5
+    - - 1
+      - 4
+  - !ruby/object:Pawn
+    piece: "\e[30m♟"
+    position:
+    - 6
+    - 6
+    type: pawn
+    on_first_move: false
+    passant: false
+    c_children:
+    - - 7
+      - 7
+    - - 7
+      - 5
+    m_children:
+    - - 7
+      - 6
+  - !ruby/object:Rook
+    piece: "\e[30m♜"
+    position:
+    - 0
+    - 7
+    type: rook
+    on_first_move: true
+    children:
+    - - 1
+      - 7
+    - - 2
+      - 7
+    - - 3
+      - 7
+    - - 4
+      - 7
+    - - 5
+      - 7
+    - - 6
+      - 7
+    - - 0
+      - 6
 :active_player: *1
